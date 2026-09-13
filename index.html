@@ -951,6 +951,139 @@
       margin-top: 4px;
     }
 
+    /* ════════════════════════
+       SCREEN 7 — PROFILE & COLLECTION
+    ════════════════════════ */
+    #profileScreen {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      z-index: 30;
+      transform: translateX(-100%);
+      transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+    #profileScreen.open { transform: translateX(0); }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 12px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .profile-user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .profile-avatar-ring {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #000;
+      flex-shrink: 0;
+    }
+    .profile-avatar-ring img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .profile-name {
+      font-size: 18px;
+      font-weight: 500;
+      color: #000;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    .profile-back-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #000;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+    }
+
+    /* Tabs: Designs | Collection */
+    .profile-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 36px;
+      padding: 18px 0 16px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .profile-tab {
+      font-size: 16px;
+      color: #666;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      cursor: pointer;
+      padding-bottom: 4px;
+      transition: color 0.2s;
+    }
+    .profile-tab.active {
+      color: #000;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      text-decoration-thickness: 1.5px;
+    }
+
+    .profile-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 16px 30px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .profile-scroll::-webkit-scrollbar { display: none; }
+
+    /* Collection Grid & Cards matching screenshot */
+    .collection-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .collection-card {
+      background: #fff;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      padding: 24px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 210px;
+      position: relative;
+      box-sizing: border-box;
+    }
+    .collection-card-img {
+      max-width: 130px;
+      max-height: 150px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+    }
+    .collection-card-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #222;
+      text-align: center;
+      line-height: 1.35;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    .collection-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+      font-size: 14px;
+      line-height: 1.6;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
   </style>
 </head>
 <body>
@@ -1173,6 +1306,33 @@
       </div>
     </div>
 
+    <!-- SCREEN 7: Profile & Collection -->
+    <div id="profileScreen">
+      <div class="profile-header">
+        <div class="profile-user-info">
+          <div class="profile-avatar-ring">
+            <img src="Assets/POSTS/post1.png" alt="Profile" />
+          </div>
+          <span class="profile-name">satyeks</span>
+        </div>
+        <button class="profile-back-btn" id="profileBackBtn">&#8592;</button>
+      </div>
+
+      <div class="profile-tabs">
+        <div class="profile-tab" id="tabDesigns">Designs</div>
+        <div class="profile-tab active" id="tabCollection">Collection</div>
+      </div>
+
+      <div class="profile-scroll">
+        <div id="profileDesignsView" style="display:none;">
+          <div class="masonry" id="profileGrid"></div>
+        </div>
+        <div id="profileCollectionView">
+          <div class="collection-grid" id="collectionGrid"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -1216,14 +1376,88 @@
       grid.appendChild(card);
     });
 
-    // ── profile avatar click -> toggle black ring ──
+    // ── profile avatar click -> open profile & collection screen ──
     const profileAvatarBtn = document.getElementById('profileAvatarBtn');
-    if (profileAvatarBtn) {
-      profileAvatarBtn.addEventListener('click', () => {
-        profileAvatarBtn.classList.toggle('has-ring');
-        showToast('@satyeks profile');
+    const profileScreen    = document.getElementById('profileScreen');
+    const profileBackBtn   = document.getElementById('profileBackBtn');
+    const tabDesigns       = document.getElementById('tabDesigns');
+    const tabCollection    = document.getElementById('tabCollection');
+    const profileDesignsView    = document.getElementById('profileDesignsView');
+    const profileCollectionView = document.getElementById('profileCollectionView');
+    const collectionGrid   = document.getElementById('collectionGrid');
+    const profileGrid      = document.getElementById('profileGrid');
+
+    function openProfile(initialTab = 'collection') {
+      switchProfileTab(initialTab);
+      profileScreen.classList.add('open');
+    }
+
+    function switchProfileTab(tab) {
+      if (tab === 'designs') {
+        tabDesigns.classList.add('active');
+        tabCollection.classList.remove('active');
+        profileDesignsView.style.display = 'block';
+        profileCollectionView.style.display = 'none';
+        renderProfileDesigns();
+      } else {
+        tabCollection.classList.add('active');
+        tabDesigns.classList.remove('active');
+        profileCollectionView.style.display = 'block';
+        profileDesignsView.style.display = 'none';
+        renderCollection();
+      }
+    }
+
+    function renderCollection() {
+      const items = CollectionStore.getAll();
+      collectionGrid.innerHTML = '';
+      if (items.length === 0) {
+        collectionGrid.innerHTML = `
+          <div class="collection-empty" style="grid-column: 1 / -1;">
+            <p style="font-weight:600; color:#333;">Your collection is empty.</p>
+            <p style="font-size:12px; color:#999; margin-top:6px;">Swipe right-to-left on any post and tap <b>+</b> to save items here!</p>
+          </div>
+        `;
+        return;
+      }
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'collection-card';
+        card.innerHTML = `
+          <img class="collection-card-img" src="${item.img}" alt="${item.name}" />
+          <div class="collection-card-name">${item.name}</div>
+        `;
+        collectionGrid.appendChild(card);
       });
     }
+
+    function renderProfileDesigns() {
+      profileGrid.innerHTML = '';
+      posts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const img = document.createElement('img');
+        img.src = p.src;
+        img.loading = 'lazy';
+        card.appendChild(img);
+        card.addEventListener('click', () => {
+          profileScreen.classList.remove('open');
+          openDetail(p);
+        });
+        profileGrid.appendChild(card);
+      });
+    }
+
+    if (profileAvatarBtn) {
+      profileAvatarBtn.addEventListener('click', () => {
+        profileAvatarBtn.classList.add('has-ring');
+        openProfile('collection');
+      });
+    }
+
+    tabDesigns.addEventListener('click', () => switchProfileTab('designs'));
+    tabCollection.addEventListener('click', () => switchProfileTab('collection'));
+    profileBackBtn.addEventListener('click', () => profileScreen.classList.remove('open'));
 
 
     // ── collection store ──
