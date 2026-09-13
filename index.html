@@ -205,36 +205,32 @@
       object-fit: contain;
     }
 
-    /* item showcase slide styling */
+    /* item showcase slide styling — size matches parent post, clean light bg */
     .item-showcase-slide {
       width: 100%;
+      height: 100%;
       box-sizing: border-box;
-      padding: 36px 20px 44px;
+      padding: 32px 20px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #fafafa;
-      min-height: 380px;
+      background: #f8f8f8;
       position: relative;
     }
-    .item-showcase-badge {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #555;
-      background: #eaeaea;
-      padding: 4px 10px;
-      border-radius: 12px;
-      margin-bottom: 18px;
+    .item-showcase-img-container {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
     }
     .item-showcase-img {
       max-width: 220px;
-      max-height: 240px;
+      max-height: 250px;
       object-fit: contain;
-      margin-bottom: 18px;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.08));
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.06));
     }
     .item-showcase-title {
       font-size: 14px;
@@ -243,34 +239,100 @@
       text-align: center;
       margin-bottom: 4px;
       padding: 0 10px;
-    }
-    .item-showcase-price {
-      font-size: 13px;
-      font-weight: 600;
-      color: #666;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
-    /* dots indicator */
-    .carousel-dots {
+    /* add to collection button & morphing animation */
+    .add-to-collection-btn {
       position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 16px;
+      right: 16px;
+      z-index: 6;
+      height: 36px;
+      padding: 0 14px;
+      background: #eaeaec;
+      border: 1px solid #d4d4d8;
+      border-radius: 8px;
+      color: #111;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      cursor: pointer;
       display: flex;
-      gap: 6px;
-      z-index: 4;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                  height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                  padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-radius 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                  background 0.3s ease,
+                  border-color 0.3s ease;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .add-to-collection-btn .btn-text {
+      display: inline-block;
+      max-width: 160px;
+      opacity: 1;
+      transition: max-width 0.4s ease, opacity 0.3s ease;
+    }
+
+    .add-to-collection-btn .btn-icon {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1;
+      display: none;
+    }
+
+    /* Morphed state: circular + button */
+    .add-to-collection-btn.morphed {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid #333;
+    }
+    .add-to-collection-btn.morphed .btn-text {
+      max-width: 0;
+      opacity: 0;
       pointer-events: none;
     }
+    .add-to-collection-btn.morphed .btn-icon {
+      display: block;
+    }
+
+    /* Saved state (after click) */
+    .add-to-collection-btn.saved {
+      background: #000 !important;
+      border-color: #000 !important;
+      color: #fff !important;
+    }
+
+    /* dots indicator bar */
+    .carousel-dots-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 0 8px;
+      background: #fff;
+    }
+    .carousel-dots {
+      display: flex;
+      gap: 7px;
+    }
     .carousel-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.2);
-      transition: background 0.2s, transform 0.2s;
+      background: #d4d4d8;
+      transition: background 0.25s, transform 0.25s;
     }
     .carousel-dot.active {
       background: #000;
-      transform: scale(1.3);
+      transform: scale(1.2);
     }
 
     /* swipe hint pill */
@@ -290,6 +352,29 @@
       display: flex;
       align-items: center;
       gap: 4px;
+    }
+
+    /* toast notification */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(0, 0, 0, 0.9);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 20px;
+      z-index: 999;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
 
     /* meta row: @user, tags, buy now */
@@ -890,8 +975,11 @@
             </div>
             <!-- Item slides dynamically appended here -->
           </div>
-          <div class="carousel-dots" id="carouselDots"></div>
           <div class="carousel-swipe-hint" id="swipeHint">Items used &rarr;</div>
+        </div>
+
+        <div class="carousel-dots-bar">
+          <div class="carousel-dots" id="carouselDots"></div>
         </div>
 
         <!-- Meta: user + buy now -->
@@ -1121,13 +1209,51 @@
     const relatedGrid    = document.getElementById('relatedGrid');
     const backBtn        = document.getElementById('backBtn');
 
-    function getItemCategory(name) {
-      const lower = (name || '').toLowerCase();
-      if (lower.includes('sticker')) return 'STICKER';
-      if (lower.includes('charm') || lower.includes('strap') || lower.includes('beaded')) return 'CHARM';
-      if (lower.includes('cover') || lower.includes('case')) return 'COVER';
-      return 'ITEM';
+    // ── collection store ──
+    const CollectionStore = {
+      KEY: 'hotcat_collection_items',
+      getAll() {
+        try { return JSON.parse(localStorage.getItem(this.KEY) || '[]'); }
+        catch(e) { return []; }
+      },
+      add(item) {
+        const list = this.getAll();
+        if (!list.some(i => i.name === item.name)) {
+          list.push({ ...item, savedAt: Date.now() });
+          localStorage.setItem(this.KEY, JSON.stringify(list));
+        }
+      },
+      remove(itemName) {
+        const list = this.getAll().filter(i => i.name !== itemName);
+        localStorage.setItem(this.KEY, JSON.stringify(list));
+      },
+      has(itemName) {
+        return this.getAll().some(i => i.name === itemName);
+      }
+    };
+
+    function showToast(msg) {
+      let toast = document.getElementById('toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
     }
+
+    // ── detail screen & carousel slider ──
+    const detail         = document.getElementById('detail');
+    const detailHero     = document.getElementById('detailHero');
+    const detailCarousel = document.getElementById('detailCarousel');
+    const carouselDots   = document.getElementById('carouselDots');
+    const swipeHint      = document.getElementById('swipeHint');
+    const detailUser     = document.getElementById('detailUser');
+    const detailTags     = document.getElementById('detailTags');
+    const relatedGrid    = document.getElementById('relatedGrid');
+    const backBtn        = document.getElementById('backBtn');
 
     function openDetail(post) {
       // hero main image
@@ -1148,26 +1274,60 @@
       dot1.className = 'carousel-dot active';
       carouselDots.appendChild(dot1);
 
-      // Create item slides for each sticker, cover, charm used in making it
-      items.forEach((item) => {
+      // Create item slides matching parent post height
+      items.forEach((item, idx) => {
         const slideWrapper = document.createElement('div');
         slideWrapper.className = 'carousel-slide item-showcase-slide-wrapper';
 
-        const category = getItemCategory(item.name);
+        const isSaved = CollectionStore.has(item.name);
+
         slideWrapper.innerHTML = `
           <div class="item-showcase-slide">
-            <span class="item-showcase-badge">${category}</span>
-            <img class="item-showcase-img" src="${item.img}" alt="${item.name}" loading="lazy" />
+            <button class="add-to-collection-btn ${isSaved ? 'saved morphed' : ''}" data-idx="${idx}">
+              <span class="btn-text">${isSaved ? 'saved' : 'add it to collection'}</span>
+              <span class="btn-icon">${isSaved ? '&#10003;' : '+'}</span>
+            </button>
+            <div class="item-showcase-img-container">
+              <img class="item-showcase-img" src="${item.img}" alt="${item.name}" loading="lazy" />
+            </div>
             <div class="item-showcase-title">${item.name}</div>
-            <div class="item-showcase-price">&#8377;${item.price}</div>
           </div>
         `;
+
+        const btn = slideWrapper.querySelector('.add-to-collection-btn');
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          if (CollectionStore.has(item.name)) {
+            CollectionStore.remove(item.name);
+            btn.classList.remove('saved');
+            btn.querySelector('.btn-icon').textContent = '+';
+            if (!btn.classList.contains('morphed')) {
+              btn.querySelector('.btn-text').textContent = 'add it to collection';
+            }
+            showToast('Removed from collection');
+          } else {
+            CollectionStore.add(item);
+            btn.classList.add('saved');
+            btn.querySelector('.btn-icon').textContent = '✓';
+            showToast('Saved to collection');
+          }
+        };
+
         detailCarousel.appendChild(slideWrapper);
 
         const dot = document.createElement('div');
         dot.className = 'carousel-dot';
         carouselDots.appendChild(dot);
       });
+
+      // Adjust slide wrapper height to match main hero height dynamically
+      setTimeout(() => {
+        const heroHeight = detailHero.clientHeight || 420;
+        const wrappers = detailCarousel.querySelectorAll('.item-showcase-slide-wrapper');
+        wrappers.forEach(w => {
+          w.style.height = `${heroHeight}px`;
+        });
+      }, 50);
 
       // reset scroll position & hint
       detailCarousel.scrollLeft = 0;
@@ -1195,7 +1355,7 @@
       detail.classList.add('open');
     }
 
-    // Carousel scroll listener to update active dot & hide swipe hint on scroll
+    // Carousel scroll listener to update active dot & trigger morphing animation
     detailCarousel.addEventListener('scroll', () => {
       const slideWidth = detailCarousel.clientWidth || 1;
       const index = Math.round(detailCarousel.scrollLeft / slideWidth);
@@ -1205,6 +1365,19 @@
       });
       if (swipeHint && detailCarousel.scrollLeft > 20) {
         swipeHint.style.opacity = '0';
+      }
+
+      // Trigger morph animation from 'add it to collection' -> '+' on active item slide
+      if (index > 0) {
+        const activeWrapper = detailCarousel.querySelectorAll('.item-showcase-slide-wrapper')[index - 1];
+        if (activeWrapper) {
+          const btn = activeWrapper.querySelector('.add-to-collection-btn');
+          if (btn && !btn.classList.contains('morphed')) {
+            setTimeout(() => {
+              btn.classList.add('morphed');
+            }, 650);
+          }
+        }
       }
     });
 
