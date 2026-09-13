@@ -169,12 +169,129 @@
       line-height: 1;
     }
 
-    /* hero image — full, no crop */
+    /* hero image & carousel slider — full, no crop */
+    .detail-carousel-wrapper {
+      position: relative;
+      width: 100%;
+      background: #fff;
+      overflow: hidden;
+    }
+    .detail-carousel {
+      display: flex;
+      width: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .detail-carousel::-webkit-scrollbar { display: none; }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      background: #fff;
+    }
+
     .detail-hero {
       width: 100%;
       display: block;
       object-fit: contain;
     }
+
+    /* item showcase slide styling */
+    .item-showcase-slide {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 32px 20px 42px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      min-height: 380px;
+      position: relative;
+    }
+    .item-showcase-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #555;
+      background: #eaeaea;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+    .item-showcase-img {
+      max-width: 220px;
+      max-height: 240px;
+      object-fit: contain;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.08));
+    }
+    .item-showcase-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+      text-align: center;
+      margin-bottom: 4px;
+      padding: 0 10px;
+    }
+    .item-showcase-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+    }
+
+    /* dots indicator */
+    .carousel-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.2);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .carousel-dot.active {
+      background: #000;
+      transform: scale(1.3);
+    }
+
+    /* swipe hint pill */
+    .carousel-swipe-hint {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      background: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 14px;
+      z-index: 4;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
 
     /* meta row: @user, tags, buy now */
     .detail-meta {
@@ -766,8 +883,17 @@
       <button class="detail-back" id="backBtn">&#8592;</button>
 
       <div class="detail-scroll">
-        <!-- Hero image -->
-        <img id="detailHero" class="detail-hero" src="" alt="Post" />
+        <!-- Hero image & slider showcasing items -->
+        <div class="detail-carousel-wrapper">
+          <div class="detail-carousel" id="detailCarousel">
+            <div class="carousel-slide">
+              <img id="detailHero" class="detail-hero" src="" alt="Post" />
+            </div>
+            <!-- Item slides dynamically appended here -->
+          </div>
+          <div class="carousel-dots" id="carouselDots"></div>
+          <div class="carousel-swipe-hint" id="swipeHint">Items used &rarr;</div>
+        </div>
 
         <!-- Meta: user + buy now -->
         <div class="detail-meta">
@@ -985,21 +1111,72 @@
       grid.appendChild(card);
     });
 
-    // ── detail screen ──
-    const detail    = document.getElementById('detail');
-    const detailHero = document.getElementById('detailHero');
-    const detailUser = document.getElementById('detailUser');
-    const detailTags = document.getElementById('detailTags');
-    const relatedGrid = document.getElementById('relatedGrid');
-    const backBtn   = document.getElementById('backBtn');
+    // ── detail screen & carousel slider ──
+    const detail         = document.getElementById('detail');
+    const detailHero     = document.getElementById('detailHero');
+    const detailCarousel = document.getElementById('detailCarousel');
+    const carouselDots   = document.getElementById('carouselDots');
+    const swipeHint      = document.getElementById('swipeHint');
+    const detailUser     = document.getElementById('detailUser');
+    const detailTags     = document.getElementById('detailTags');
+    const relatedGrid    = document.getElementById('relatedGrid');
+    const backBtn        = document.getElementById('backBtn');
+
+    function getItemCategory(name) {
+      const lower = (name || '').toLowerCase();
+      if (lower.includes('sticker')) return 'STICKER';
+      if (lower.includes('charm') || lower.includes('strap') || lower.includes('beaded')) return 'CHARM';
+      if (lower.includes('cover') || lower.includes('case')) return 'COVER';
+      return 'ITEM';
+    }
 
     function openDetail(post) {
-      // hero
+      // main post image
       detailHero.src  = post.src;
       detailUser.textContent = post.user;
       detailTags.textContent = post.tags;
 
-      // related: for now show same post repeated in 2-col grid
+      // remove previous item showcase slides & dots
+      const itemSlides = detailCarousel.querySelectorAll('.item-showcase-slide-wrapper');
+      itemSlides.forEach(el => el.remove());
+      carouselDots.innerHTML = '';
+
+      const items = post.items || [];
+      const totalSlides = 1 + items.length;
+
+      // Dot 1 for main post image
+      const dot1 = document.createElement('div');
+      dot1.className = 'carousel-dot active';
+      carouselDots.appendChild(dot1);
+
+      // Create item slides for each sticker, cover, charm used into making it
+      items.forEach((item, idx) => {
+        const slideWrapper = document.createElement('div');
+        slideWrapper.className = 'carousel-slide item-showcase-slide-wrapper';
+
+        const category = getItemCategory(item.name);
+        slideWrapper.innerHTML = `
+          <div class="item-showcase-slide">
+            <span class="item-showcase-badge">${category}</span>
+            <img class="item-showcase-img" src="${item.img}" alt="${item.name}" loading="lazy" />
+            <div class="item-showcase-title">${item.name}</div>
+            <div class="item-showcase-price">&#8377; ${item.price}</div>
+          </div>
+        `;
+        detailCarousel.appendChild(slideWrapper);
+
+        const dot = document.createElement('div');
+        dot.className = 'carousel-dot';
+        carouselDots.appendChild(dot);
+      });
+
+      // reset scroll position & hint
+      detailCarousel.scrollLeft = 0;
+      if (swipeHint) {
+        swipeHint.style.opacity = totalSlides > 1 ? '1' : '0';
+      }
+
+      // related: show 4 related cards
       relatedGrid.innerHTML = '';
       for (let i = 0; i < 4; i++) {
         const rc = document.createElement('div');
@@ -1018,6 +1195,61 @@
       detail.querySelector('.detail-scroll').scrollTop = 0;
       detail.classList.add('open');
     }
+
+    // Carousel scroll listener to update active dot & hide swipe hint on scroll
+    detailCarousel.addEventListener('scroll', () => {
+      const slideWidth = detailCarousel.clientWidth || 1;
+      const index = Math.round(detailCarousel.scrollLeft / slideWidth);
+      const dots = carouselDots.querySelectorAll('.carousel-dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === index);
+      });
+      if (swipeHint && detailCarousel.scrollLeft > 20) {
+        swipeHint.style.opacity = '0';
+      }
+    });
+
+    // Touch swipe gesture support for swiping right-to-left
+    let touchStartX = 0;
+    let touchStartY = 0;
+    detailCarousel.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    detailCarousel.addEventListener('touchend', e => {
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
+        const slideWidth = detailCarousel.clientWidth || 1;
+        const currentIdx = Math.round(detailCarousel.scrollLeft / slideWidth);
+        if (deltaX < 0) { // swipe left (right to left)
+          detailCarousel.scrollTo({ left: (currentIdx + 1) * slideWidth, behavior: 'smooth' });
+        } else { // swipe right (left to right)
+          detailCarousel.scrollTo({ left: (currentIdx - 1) * slideWidth, behavior: 'smooth' });
+        }
+      }
+    }, { passive: true });
+
+    // Desktop mouse drag support
+    let isDragActive = false;
+    let dragStartX = 0;
+    let dragScrollLeft = 0;
+
+    detailCarousel.addEventListener('mousedown', e => {
+      isDragActive = true;
+      dragStartX = e.pageX - detailCarousel.offsetLeft;
+      dragScrollLeft = detailCarousel.scrollLeft;
+    });
+    detailCarousel.addEventListener('mouseleave', () => { isDragActive = false; });
+    detailCarousel.addEventListener('mouseup', () => { isDragActive = false; });
+    detailCarousel.addEventListener('mousemove', e => {
+      if (!isDragActive) return;
+      e.preventDefault();
+      const x = e.pageX - detailCarousel.offsetLeft;
+      const walk = (x - dragStartX) * 1.5;
+      detailCarousel.scrollLeft = dragScrollLeft - walk;
+    });
 
     backBtn.addEventListener('click', () => {
       detail.classList.remove('open');
