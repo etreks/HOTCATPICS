@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>HOTCATPICS — Design Studio</title>
+  <style>
+    @font-face {
+      font-family: 'Heimat Mono';
+      src: url('assets/fonts/Heimat Mono.ttf') format('truetype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #000;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      max-height: 932px;
+      background: #111113;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+    }
+
+    /* Top Control Bar */
+    .studio-header {
+      height: 56px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+      background: rgba(17, 17, 19, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 6px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s;
+    }
+    .header-btn:active { opacity: 0.6; }
+
+    .header-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: 'Heimat Mono', monospace;
+      color: #fff;
+    }
+
+    .done-btn {
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 18px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .done-btn:active { transform: scale(0.94); opacity: 0.9; }
+
+    /* Canvas Stage Area */
+    .studio-stage {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1e1e24 0%, #0d0d10 100%);
+    }
+
+    /* Phone Case Base */
+    .phone-case-container {
+      width: 240px;
+      height: 440px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .phone-cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 12px 28px rgba(0,0,0,0.5));
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Sticker / Charm Overlay Layer */
+    .placed-item {
+      position: absolute;
+      touch-action: none;
+      user-select: none;
+      cursor: move;
+      display: inline-block;
+      padding: 6px;
+    }
+
+    .placed-item img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    /* Selection Ring & Control Handles */
+    .placed-item.selected {
+      outline: 1.5px dashed rgba(255, 255, 255, 0.8);
+      outline-offset: 2px;
+    }
+
+    .handle-btn {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      cursor: pointer;
+      display: none;
+      z-index: 10;
+    }
+
+    .placed-item.selected .handle-btn {
+      display: flex;
+    }
+
+    .delete-handle {
+      top: -10px;
+      left: -10px;
+      background: #ff3b30;
+      color: #fff;
+    }
+
+    .rotate-handle {
+      bottom: -10px;
+      right: -10px;
+      background: #fff;
+      color: #000;
+    }
+
+    /* Bottom Tray Drawer */
+    .studio-drawer {
+      height: 240px;
+      background: #18181c;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+    }
+
+    .drawer-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: #141417;
+    }
+
+    .drawer-tab {
+      flex: 1;
+      padding: 12px 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #777;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .drawer-tab.active {
+      color: #fff;
+      border-bottom: 2px solid #fff;
+    }
+
+    .drawer-items-scroll {
+      flex: 1;
+      overflow-x: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 16px;
+      scrollbar-width: none;
+    }
+    .drawer-items-scroll::-webkit-scrollbar { display: none; }
+
+    .asset-card {
+      width: 90px;
+      height: 120px;
+      background: #222228;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .asset-card:active {
+      transform: scale(0.94);
+      border-color: #fff;
+    }
+
+    .asset-card img {
+      max-width: 65px;
+      max-height: 70px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+
+    .asset-card-title {
+      font-size: 10px;
+      color: #aaa;
+      text-align: center;
+      line-height: 1.2;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(255, 255, 255, 0.95);
+      color: #000;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 20px;
+      z-index: 100;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Top Bar -->
+    <div class="studio-header">
+      <button class="header-btn" id="exitBtn" title="Back to profile">&#8592;</button>
+      <span class="header-title">Design Studio</span>
+      <button class="done-btn" id="publishBtn">PUBLISH</button>
+    </div>
+
+    <!-- Canvas Stage -->
+    <div class="studio-stage" id="stage">
+      <div class="phone-case-container" id="phoneContainer">
+        <img id="baseCover" class="phone-cover-img" src="Assets/Items/case_beige.png" alt="Phone Cover Base" />
+      </div>
+    </div>
+
+    <!-- Asset Tray Drawer -->
+    <div class="studio-drawer">
+      <div class="drawer-tabs">
+        <div class="drawer-tab active" data-tab="covers">COVERS</div>
+        <div class="drawer-tab" data-tab="stickers">STICKERS</div>
+        <div class="drawer-tab" data-tab="charms">CHARMS</div>
+      </div>
+      <div class="drawer-items-scroll" id="assetTray">
+        <!-- Asset Cards dynamically rendered here -->
+      </div>
+    </div>
+
+    <div id="toast">Design Published!</div>
+  </div>
+
+  <script>
+    // Asset Libraries
+    const ASSETS = {
+      covers: [
+        { name: 'Silicon Beige', img: 'Assets/Items/case_beige.png' },
+        { name: 'Burgundy Wave', img: 'Assets/POSTS/post2.png' },
+        { name: 'Marimekko Clear', img: 'Assets/POSTS/post3.png' }
+      ],
+      stickers: [
+        { name: 'Hello Miles', img: 'Assets/Items/sticker_hello_miles.png' },
+        { name: 'Spider Punk', img: 'Assets/Items/sticker_spiderpunk.png' }
+      ],
+      charms: [
+        { name: 'Little Aid Charm', img: 'Assets/Items/charm_cat.jpg' },
+        { name: 'Pearl Beaded Strap', img: 'Assets/POSTS/post2.png' }
+      ]
+    };
+
+    const stage = document.getElementById('stage');
+    const phoneContainer = document.getElementById('phoneContainer');
+    const baseCover = document.getElementById('baseCover');
+    const assetTray = document.getElementById('assetTray');
+    const publishBtn = document.getElementById('publishBtn');
+    const exitBtn = document.getElementById('exitBtn');
+
+    let activeTab = 'covers';
+    let selectedElement = null;
+
+    // Switch Tabs
+    document.querySelectorAll('.drawer-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.drawer-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeTab = tab.dataset.tab;
+        renderTray();
+      });
+    });
+
+    // Render Asset Tray
+    function renderTray() {
+      assetTray.innerHTML = '';
+      const list = ASSETS[activeTab] || [];
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'asset-card';
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <div class="asset-card-title">${item.name}</div>
+        `;
+        card.addEventListener('click', () => {
+          if (activeTab === 'covers') {
+            baseCover.src = item.img;
+            showToast(`Cover set: ${item.name}`);
+          } else {
+            addItemToStage(item);
+          }
+        });
+        assetTray.appendChild(card);
+      });
+    }
+
+    // Add Sticker/Charm to Stage
+    function addItemToStage(item) {
+      const el = document.createElement('div');
+      el.className = 'placed-item';
+      el.style.left = '75px';
+      el.style.top = '140px';
+      el.style.width = '90px';
+      el.style.height = '90px';
+
+      el.innerHTML = `
+        <img src="${item.img}" alt="${item.name}" />
+        <div class="handle-btn delete-handle">&times;</div>
+      `;
+
+      phoneContainer.appendChild(el);
+      makeInteractive(el);
+      selectItem(el);
+      showToast(`Added ${item.name}`);
+    }
+
+    // Interactive Drag / Select / Delete
+    function selectItem(el) {
+      document.querySelectorAll('.placed-item').forEach(i => i.classList.remove('selected'));
+      if (el) {
+        el.classList.add('selected');
+        selectedElement = el;
+      } else {
+        selectedElement = null;
+      }
+    }
+
+    stage.addEventListener('click', (e) => {
+      if (!e.target.closest('.placed-item')) {
+        selectItem(null);
+      }
+    });
+
+    function makeInteractive(el) {
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let initialLeft = 0, initialTop = 0;
+
+      const deleteBtn = el.querySelector('.delete-handle');
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        el.remove();
+        selectItem(null);
+      });
+
+      el.addEventListener('pointerdown', (e) => {
+        if (e.target.classList.contains('handle-btn')) return;
+        selectItem(el);
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        initialLeft = el.offsetLeft;
+        initialTop = el.offsetTop;
+        el.setPointerCapture(e.pointerId);
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        el.style.left = `${initialLeft + dx}px`;
+        el.style.top = `${initialTop + dy}px`;
+      });
+
+      el.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
+    }
+
+    // Publish Custom Design
+    publishBtn.addEventListener('click', () => {
+      const customDesign = {
+        id: 'design_' + Date.now(),
+        cover: baseCover.src,
+        src: baseCover.src,
+        user: '@satyeks',
+        tags: '#custom #mycreation',
+        createdAt: Date.now()
+      };
+
+      try {
+        const saved = JSON.parse(localStorage.getItem('hcp_custom_designs') || '[]');
+        saved.unshift(customDesign);
+        localStorage.setItem('hcp_custom_designs', JSON.stringify(saved));
+      } catch(e){}
+
+      showToast('Design Published! Redirecting...');
+      setTimeout(() => {
+        window.location.href = 'index.html#profile';
+      }, 1200);
+    });
+
+    exitBtn.addEventListener('click', () => {
+      window.location.href = 'index.html#profile';
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Initial render
+    renderTray();
+  </script>
+</body>
+</html>

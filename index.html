@@ -1474,7 +1474,9 @@
     function renderProfileDesigns() {
       const btn = document.getElementById('createDesignsBtn');
       if (btn) {
-        btn.onclick = () => showToast('Design Studio coming soon!');
+        btn.onclick = () => {
+          window.location.href = 'studio.html';
+        };
       }
     }
 
@@ -1488,6 +1490,13 @@
     tabDesigns.addEventListener('click', () => switchProfileTab('designs'));
     tabCollection.addEventListener('click', () => switchProfileTab('collection'));
     profileBackBtn.addEventListener('click', () => profileScreen.classList.remove('open'));
+
+    // Check if returning from studio.html
+    if (window.location.hash === '#profile') {
+      setTimeout(() => {
+        openProfile('designs');
+      }, 1500);
+    }
 
 
     // ── collection store ──
