@@ -97,8 +97,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(0,0,0,0.08);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      box-shadow: 0 0 0 0px transparent;
+      transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease;
+      box-sizing: border-box;
+    }
+    .profile-avatar.has-ring,
+    .profile-avatar:active {
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000;
+      transform: scale(0.96);
     }
     .profile-avatar img {
       width: 100%;
@@ -1209,6 +1215,15 @@
       card.addEventListener('click', () => openDetail(p));
       grid.appendChild(card);
     });
+
+    // ── profile avatar click -> toggle black ring ──
+    const profileAvatarBtn = document.getElementById('profileAvatarBtn');
+    if (profileAvatarBtn) {
+      profileAvatarBtn.addEventListener('click', () => {
+        profileAvatarBtn.classList.toggle('has-ring');
+        showToast('@satyeks profile');
+      });
+    }
 
 
     // ── collection store ──
