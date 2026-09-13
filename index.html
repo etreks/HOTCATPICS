@@ -1403,18 +1403,35 @@
       { src: 'Assets/POSTS/post1.png', user: '@satyeks', tags: '#spider #spidey...', items: itemsPost1 },
     ];
 
+    function getCustomPosts() {
+      try {
+        return JSON.parse(localStorage.getItem('hcp_custom_posts') || '[]');
+      } catch(e) {
+        return [];
+      }
+    }
+
     // ── build feed grid ──
     const grid = document.getElementById('grid');
-    posts.forEach((p, i) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      const img = document.createElement('img');
-      img.src = p.src;
-      img.loading = 'lazy';
-      card.appendChild(img);
-      card.addEventListener('click', () => openDetail(p));
-      grid.appendChild(card);
-    });
+    function renderFeedGrid() {
+      if (!grid) return;
+      grid.innerHTML = '';
+      const customPosts = getCustomPosts();
+      const allPosts = [...customPosts, ...posts];
+
+      allPosts.forEach((p) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const img = document.createElement('img');
+        img.src = p.src;
+        img.loading = 'lazy';
+        card.appendChild(img);
+        card.addEventListener('click', () => openDetail(p));
+        grid.appendChild(card);
+      });
+    }
+
+    renderFeedGrid();
 
     // ── profile avatar click -> open profile & collection screen ──
     const profileAvatarBtn = document.getElementById('profileAvatarBtn');
@@ -1472,11 +1489,42 @@
     }
 
     function renderProfileDesigns() {
+      const customPosts = getCustomPosts();
+      profileDesignsView.innerHTML = `
+        <div class="create-designs-wrapper" id="createDesignsBtn">
+          <div class="create-designs-btn">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </div>
+          <div class="create-designs-label">Create Designs</div>
+        </div>
+        ${customPosts.length > 0 ? '<div class="masonry" id="customDesignsGrid" style="margin-top:24px;"></div>' : ''}
+      `;
+
       const btn = document.getElementById('createDesignsBtn');
       if (btn) {
         btn.onclick = () => {
           window.location.href = 'studio.html';
         };
+      }
+
+      const customGrid = document.getElementById('customDesignsGrid');
+      if (customGrid && customPosts.length > 0) {
+        customPosts.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          const img = document.createElement('img');
+          img.src = p.src;
+          img.loading = 'lazy';
+          card.appendChild(img);
+          card.addEventListener('click', () => {
+            profileScreen.classList.remove('open');
+            openDetail(p);
+          });
+          customGrid.appendChild(card);
+        });
       }
     }
 

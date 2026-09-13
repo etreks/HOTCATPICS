@@ -454,26 +454,90 @@
     }
 
     // Publish Custom Design
-    publishBtn.addEventListener('click', () => {
-      const customDesign = {
-        id: 'design_' + Date.now(),
-        cover: baseCover.src,
-        src: baseCover.src,
+    publishBtn.addEventListener('click', async () => {
+      publishBtn.disabled = true;
+      publishBtn.textContent = 'SAVING...';
+      showToast('Rendering design...');
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 480;
+      canvas.height = 880;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Solid background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 2. Draw base cover image
+      try {
+        const coverImg = new Image();
+        coverImg.crossOrigin = 'anonymous';
+        await new Promise((resolve) => {
+          coverImg.onload = resolve;
+          coverImg.onerror = resolve;
+          coverImg.src = baseCover.src;
+        });
+        ctx.drawImage(coverImg, 20, 20, 440, 840);
+      } catch(e){}
+
+      // 3. Draw overlay placed sticker items
+      const itemsUsed = [];
+      const placedEls = phoneContainer.querySelectorAll('.placed-item');
+      for (const el of placedEls) {
+        const itemImgEl = el.querySelector('img');
+        if (itemImgEl && itemImgEl.src) {
+          try {
+            const stImg = new Image();
+            stImg.crossOrigin = 'anonymous';
+            await new Promise((resolve) => {
+              stImg.onload = resolve;
+              stImg.onerror = resolve;
+              stImg.src = itemImgEl.src;
+            });
+            const scaleX = canvas.width / phoneContainer.clientWidth;
+            const scaleY = canvas.height / phoneContainer.clientHeight;
+            const x = el.offsetLeft * scaleX;
+            const y = el.offsetTop * scaleY;
+            const w = el.clientWidth * scaleX;
+            const h = el.clientHeight * scaleY;
+            ctx.drawImage(stImg, x, y, w, h);
+
+            itemsUsed.push({
+              name: itemImgEl.alt || 'Custom Sticker',
+              price: 150,
+              img: itemImgEl.src
+            });
+          } catch(e){}
+        }
+      }
+
+      itemsUsed.unshift({
+        name: 'Custom Base Cover',
+        price: 450,
+        img: baseCover.src
+      });
+
+      const dataURL = canvas.toDataURL('image/png');
+
+      const customPost = {
+        id: 'post_' + Date.now(),
+        src: dataURL,
         user: '@satyeks',
-        tags: '#custom #mycreation',
+        tags: '#custom #designstudio',
+        items: itemsUsed,
         createdAt: Date.now()
       };
 
       try {
-        const saved = JSON.parse(localStorage.getItem('hcp_custom_designs') || '[]');
-        saved.unshift(customDesign);
-        localStorage.setItem('hcp_custom_designs', JSON.stringify(saved));
+        const customPosts = JSON.parse(localStorage.getItem('hcp_custom_posts') || '[]');
+        customPosts.unshift(customPost);
+        localStorage.setItem('hcp_custom_posts', JSON.stringify(customPosts));
       } catch(e){}
 
-      showToast('Design Published! Redirecting...');
+      showToast('Published to Feed & Profile!');
       setTimeout(() => {
         window.location.href = 'index.html#profile';
-      }, 1200);
+      }, 1000);
     });
 
     exitBtn.addEventListener('click', () => {
