@@ -209,7 +209,7 @@
     .item-showcase-slide {
       width: 100%;
       box-sizing: border-box;
-      padding: 32px 20px 42px;
+      padding: 36px 20px 44px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -291,7 +291,6 @@
       align-items: center;
       gap: 4px;
     }
-
 
     /* meta row: @user, tags, buy now */
     .detail-meta {
@@ -1131,8 +1130,8 @@
     }
 
     function openDetail(post) {
-      // main post image
-      detailHero.src  = post.src;
+      // hero main image
+      detailHero.src = post.src;
       detailUser.textContent = post.user;
       detailTags.textContent = post.tags;
 
@@ -1149,8 +1148,8 @@
       dot1.className = 'carousel-dot active';
       carouselDots.appendChild(dot1);
 
-      // Create item slides for each sticker, cover, charm used into making it
-      items.forEach((item, idx) => {
+      // Create item slides for each sticker, cover, charm used in making it
+      items.forEach((item) => {
         const slideWrapper = document.createElement('div');
         slideWrapper.className = 'carousel-slide item-showcase-slide-wrapper';
 
@@ -1160,7 +1159,7 @@
             <span class="item-showcase-badge">${category}</span>
             <img class="item-showcase-img" src="${item.img}" alt="${item.name}" loading="lazy" />
             <div class="item-showcase-title">${item.name}</div>
-            <div class="item-showcase-price">&#8377; ${item.price}</div>
+            <div class="item-showcase-price">&#8377;${item.price}</div>
           </div>
         `;
         detailCarousel.appendChild(slideWrapper);
@@ -1176,7 +1175,7 @@
         swipeHint.style.opacity = totalSlides > 1 ? '1' : '0';
       }
 
-      // related: show 4 related cards
+      // related: for now show same post repeated in 2-col grid
       relatedGrid.innerHTML = '';
       for (let i = 0; i < 4; i++) {
         const rc = document.createElement('div');
@@ -1220,7 +1219,7 @@
     detailCarousel.addEventListener('touchend', e => {
       const deltaX = e.changedTouches[0].clientX - touchStartX;
       const deltaY = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 30) {
         const slideWidth = detailCarousel.clientWidth || 1;
         const currentIdx = Math.round(detailCarousel.scrollLeft / slideWidth);
         if (deltaX < 0) { // swipe left (right to left)
