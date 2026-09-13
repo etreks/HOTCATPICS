@@ -399,33 +399,33 @@
       opacity: 1;
     }
 
-    /* meta row: @user, tags, buy now */
+    /* meta row: @user, buy now */
     .detail-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 14px 10px;
-      border-bottom: 1px solid #f0f0f0;
+      padding: 14px 16px 12px;
+      background: #fff;
     }
     .detail-user-block { display: flex; align-items: center; gap: 10px; }
     .detail-avatar {
       width: 34px; height: 34px;
       border-radius: 50%;
-      background: #e0e0e0;
-      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
       flex-shrink: 0;
+      background: #eee;
     }
-    .detail-avatar svg { color: #aaa; }
+    .detail-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
     .detail-username {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       color: #000;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
-    .detail-tags {
-      font-size: 12px;
-      color: #888;
-      margin-top: 2px;
-    }
+    .detail-tags { display: none; }
     .buy-btn {
       background: #000;
       color: #fff;
@@ -1137,12 +1137,9 @@
         <div class="detail-meta">
           <div class="detail-user-block">
             <div class="detail-avatar">
-              <img src="Assets/profile.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="Profile" />
+              <img src="Assets/profile.png" alt="Profile" />
             </div>
-            <div>
-              <div class="detail-username" id="detailUser">@satyeks</div>
-              <div class="detail-tags" id="detailTags">#spider #spidey...</div>
-            </div>
+            <div class="detail-username" id="detailUser">@satyeks</div>
           </div>
           <button class="buy-btn">BUY NOW</button>
         </div>
@@ -1508,7 +1505,7 @@
       // hero main image
       detailHero.src = post.src;
       detailUser.textContent = post.user;
-      detailTags.textContent = post.tags;
+      if (detailTags) detailTags.textContent = post.tags;
 
       // remove previous item showcase slides & dots
       const itemSlides = detailCarousel.querySelectorAll('.item-showcase-slide-wrapper');
