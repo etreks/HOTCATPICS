@@ -1547,27 +1547,84 @@
     }
 
 
-    // ── collection store ──
-    const CollectionStore = {
-      KEY: 'hotcat_collection_items',
-      getAll() {
-        try { return JSON.parse(localStorage.getItem(this.KEY) || '[]'); }
-        catch(e) { return []; }
+    // ════════════════════════════════════════════════════════════════
+    //  DBStore — Persistent Storage Service (IndexedDB + localStorage)
+    // ════════════════════════════════════════════════════════════════
+    const DBStore = {
+      DB_NAME: 'HOTCATPICS_DATA',
+      DB_VERSION: 1,
+      _db: null,
+
+      async init() {
+        if (this._db) return this._db;
+        return new Promise((resolve) => {
+          try {
+            const req = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+            req.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains('collection')) {
+                db.createObjectStore('collection', { keyPath: 'name' });
+              }
+            };
+            req.onsuccess = (e) => {
+              this._db = e.target.result;
+              resolve(this._db);
+            };
+            req.onerror = () => resolve(null);
+          } catch(e) {
+            resolve(null);
+          }
+        });
       },
-      add(item) {
-        const list = this.getAll();
-        if (!list.some(i => i.name === item.name)) {
-          list.push({ ...item, savedAt: Date.now() });
-          localStorage.setItem(this.KEY, JSON.stringify(list));
+
+      getCollection() {
+        try {
+          return JSON.parse(localStorage.getItem('hotcat_collection_items') || '[]');
+        } catch(e) {
+          return [];
         }
       },
-      remove(itemName) {
-        const list = this.getAll().filter(i => i.name !== itemName);
-        localStorage.setItem(this.KEY, JSON.stringify(list));
+
+      async saveCollectionItem(item) {
+        if (!item || !item.name) return;
+        const list = this.getCollection();
+        if (!list.some(i => i.name === item.name)) {
+          list.push({ ...item, savedAt: Date.now() });
+          localStorage.setItem('hotcat_collection_items', JSON.stringify(list));
+        }
+
+        const db = await this.init();
+        if (db) {
+          try {
+            const tx = db.transaction('collection', 'readwrite');
+            tx.objectStore('collection').put({ ...item, savedAt: Date.now() });
+          } catch(e){}
+        }
       },
-      has(itemName) {
-        return this.getAll().some(i => i.name === itemName);
+
+      async removeCollectionItem(itemName) {
+        const list = this.getCollection().filter(i => i.name !== itemName);
+        localStorage.setItem('hotcat_collection_items', JSON.stringify(list));
+
+        const db = await this.init();
+        if (db) {
+          try {
+            const tx = db.transaction('collection', 'readwrite');
+            tx.objectStore('collection').delete(itemName);
+          } catch(e){}
+        }
+      },
+
+      hasCollectionItem(itemName) {
+        return this.getCollection().some(i => i.name === itemName);
       }
+    };
+
+    const CollectionStore = {
+      getAll() { return DBStore.getCollection(); },
+      add(item) { DBStore.saveCollectionItem(item); },
+      remove(itemName) { DBStore.removeCollectionItem(itemName); },
+      has(itemName) { return DBStore.hasCollectionItem(itemName); }
     };
 
     function showToast(msg) {
@@ -1648,6 +1705,9 @@
             btn.classList.add('saved');
             btn.querySelector('.btn-icon').textContent = '✓';
             showToast('Saved to collection');
+          }
+          if (typeof renderCollection === 'function') {
+            renderCollection();
           }
         };
 
