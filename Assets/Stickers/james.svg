@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 54" width="170" height="54">
+  <defs>
+    <style>
+      .james-shadow {
+        font-family: 'Impact', 'Heimat Mono', 'Arial Black', sans-serif;
+        font-weight: 900;
+        font-size: 44px;
+        fill: #111111;
+        letter-spacing: 0.05em;
+        text-anchor: middle;
+      }
+      .james-front {
+        font-family: 'Impact', 'Heimat Mono', 'Arial Black', sans-serif;
+        font-weight: 900;
+        font-size: 44px;
+        fill: #fec708;
+        stroke: #111111;
+        stroke-width: 1.5;
+        letter-spacing: 0.05em;
+        text-anchor: middle;
+      }
+    </style>
+  </defs>
+  <!-- Drop Shadow Layer -->
+  <text x="88" y="44" class="james-shadow">JAMES</text>
+  <!-- Front Vibrant Yellow Layer -->
+  <text x="85" y="41" class="james-front">JAMES</text>
+</svg>

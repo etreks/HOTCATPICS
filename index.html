@@ -142,16 +142,388 @@
     .grid-scroll::-webkit-scrollbar { display: none; }
     .masonry { columns: 2; column-gap: 8px; }
     .card {
+      position: relative;
       break-inside: avoid;
       margin-bottom: 8px;
       border-radius: 12px;
       overflow: hidden;
       background: #f5f5f5;
       cursor: pointer;
-      transition: opacity 0.15s;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, opacity 0.15s;
     }
-    .card:active { opacity: 0.82; }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+    .card:active { opacity: 0.92; }
+    
+    .card-media-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
     .card img { width: 100%; display: block; object-fit: cover; }
+
+    /* ══════════════════════════════════════════════
+       ADD TO CART BUTTON ON EACH PIN
+    ══════════════════════════════════════════════ */
+    .pin-cart-btn {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      height: 28px;
+      padding: 0 9px;
+      background: rgba(18, 18, 22, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 9999px;
+      color: #ffffff;
+      font-family: 'HeimatMono', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 5;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  background 0.2s ease,
+                  color 0.2s ease,
+                  border-color 0.2s ease,
+                  box-shadow 0.2s ease;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .pin-cart-btn:hover {
+      background: #ff7a00;
+      border-color: #ff7a00;
+      transform: scale(1.05);
+      box-shadow: 0 4px 14px rgba(255, 122, 0, 0.4);
+    }
+    .pin-cart-btn:active {
+      transform: scale(0.93);
+    }
+    .pin-cart-btn.added {
+      background: #059669;
+      border-color: #059669;
+      color: #ffffff;
+      transform: scale(1.04);
+    }
+    .pin-cart-sep {
+      width: 1px;
+      height: 9px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .pin-cart-btn.added .pin-cart-sep,
+    .pin-cart-btn.added .pin-cart-price,
+    .pin-cart-btn.added .pin-cart-icon {
+      display: none;
+    }
+
+    /* Cart trigger button in search bar */
+    .cart-trigger-btn {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #f2f2f2;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #111;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .cart-trigger-btn:hover { background: #e5e5e5; }
+    .cart-trigger-btn:active { transform: scale(0.92); }
+    .cart-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: #ff7a00;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: 'HeimatMono', monospace;
+      min-width: 17px;
+      height: 17px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid #ffffff;
+      transform: scale(0);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .cart-badge.has-items { transform: scale(1); }
+    .cart-badge.bump { animation: badgeBump 0.35s ease-out; }
+    @keyframes badgeBump {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
+    /* ════════════════════════
+       SCREEN 8 — SHOPPING CART
+    ════════════════════════ */
+    #cartScreen {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      z-index: 28;
+      transform: translateX(100%);
+      transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+    #cartScreen.open { transform: translateX(0); }
+
+    .cart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid #f0f0f2;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+    .cart-back-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #111;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+    .cart-header-title-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .cart-title {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'HeimatMono', monospace;
+      color: #000;
+      letter-spacing: 0.06em;
+    }
+    .cart-item-count {
+      font-size: 11px;
+      color: #888;
+      font-family: -apple-system, sans-serif;
+      margin-top: 1px;
+    }
+    .cart-clear-btn {
+      background: none;
+      border: none;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ef4444;
+      cursor: pointer;
+      font-family: 'HeimatMono', monospace;
+      letter-spacing: 0.04em;
+      padding: 4px;
+    }
+
+    .cart-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 24px;
+    }
+    .cart-scroll::-webkit-scrollbar { display: none; }
+
+    .cart-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .cart-empty-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #f6f6f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .cart-empty-title {
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'HeimatMono', monospace;
+      color: #111;
+      margin-bottom: 6px;
+    }
+    .cart-empty-sub {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.5;
+      max-width: 260px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid #f2f2f4;
+      background: #ffffff;
+      animation: fadeIn 0.25s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .cart-item-thumb {
+      width: 64px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #f4f4f6;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .cart-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .cart-item-title {
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'HeimatMono', monospace;
+      color: #111;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cart-item-sub {
+      font-size: 11px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+    .cart-item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cart-item-price {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+      font-family: 'HeimatMono', monospace;
+    }
+    .cart-qty-control {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #e0e0e4;
+      border-radius: 9999px;
+      padding: 2px 6px;
+      gap: 6px;
+      background: #fafafa;
+    }
+    .cart-qty-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #222;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+    .cart-qty-btn:hover { background: #e8e8ea; }
+    .cart-qty-val {
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'HeimatMono', monospace;
+      min-width: 14px;
+      text-align: center;
+    }
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: #bbb;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: color 0.15s, transform 0.15s;
+    }
+    .cart-item-remove:hover { color: #ef4444; transform: scale(1.1); }
+
+    .cart-summary-card {
+      margin: 18px 18px 0;
+      padding: 16px;
+      border-radius: 14px;
+      background: #f8f8fa;
+      border: 1px solid #ededf2;
+    }
+    .cart-summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #666;
+      font-family: 'HeimatMono', monospace;
+      margin-bottom: 8px;
+    }
+    .cart-summary-divider {
+      height: 1px;
+      background: #e4e4e8;
+      margin: 10px 0;
+    }
+    .cart-total-row {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 0;
+    }
+
+    .cart-checkout-bar {
+      padding: 14px 18px 24px;
+      background: #ffffff;
+      border-top: 1px solid #f0f0f2;
+      flex-shrink: 0;
+    }
+    .cart-checkout-btn {
+      width: 100%;
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      border-radius: 9999px;
+      padding: 16px 22px;
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: 'HeimatMono', monospace;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.15s, background 0.15s;
+    }
+    .cart-checkout-btn:hover { background: #1a1a1a; }
+    .cart-checkout-btn:active { transform: scale(0.98); }
 
     /* ════════════════════════
        SCREEN 3 — POST DETAIL
@@ -425,20 +797,49 @@
       color: #000;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
-    .detail-tags { display: none; }
+    .detail-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-cart-btn {
+      background: #f2f2f4;
+      color: #111;
+      border: 1px solid #d4d4d8;
+      border-radius: 9999px;
+      padding: 9px 15px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-family: 'HeimatMono', monospace;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .detail-cart-btn:hover { background: #e4e4e7; }
+    .detail-cart-btn:active { transform: scale(0.95); }
+    .detail-cart-btn.added {
+      background: #059669;
+      color: #ffffff;
+      border-color: #059669;
+    }
     .buy-btn {
       background: #000;
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 10px 18px;
-      font-size: 12px;
+      border-radius: 9999px;
+      padding: 9px 18px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
+      font-family: 'HeimatMono', monospace;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
+      transition: transform 0.15s, opacity 0.15s;
     }
+    .buy-btn:active { transform: scale(0.95); opacity: 0.9; }
 
     /* related posts section */
     .related-section { padding: 16px 10px 30px; }
@@ -544,17 +945,19 @@
     }
     .buy-done-btn {
       width: 100%;
-      height: 52px;
+      height: 50px;
       background: #000;
       color: #fff;
       border: none;
-      border-radius: 10px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 15px;
+      border-radius: 9999px;
+      font-family: 'HeimatMono', monospace;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.08em;
       cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
     }
+    .buy-done-btn:active { transform: scale(0.97); opacity: 0.9; }
 
     /* ════════════════════════
        SCREEN 5 — CHECKOUT
@@ -576,24 +979,31 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px 14px 14px;
+      padding: 16px 16px 12px;
       position: relative;
       flex-shrink: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
     }
     .co-back {
       position: absolute;
       left: 14px;
       background: none;
       border: none;
-      font-size: 22px;
       cursor: pointer;
       color: #000;
-      padding: 4px;
-      line-height: 1;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s;
     }
+    .co-back:active { opacity: 0.6; }
     .co-title {
-      font-size: 17px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-family: 'HeimatMono', monospace;
       color: #000;
     }
 
@@ -607,82 +1017,111 @@
 
     /* map block */
     .co-map {
-      margin: 0 14px 16px;
-      border-radius: 14px;
+      margin: 0 16px 18px;
+      border-radius: 16px;
       overflow: hidden;
       position: relative;
-      height: 160px;
-      background: #dde3ec;
+      height: 165px;
+      background: #e9eef5;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
     }
     .co-map-grid {
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(#c8d0dc 1px, transparent 1px),
-        linear-gradient(90deg, #c8d0dc 1px, transparent 1px);
-      background-size: 28px 28px;
+        linear-gradient(rgba(185, 196, 210, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(185, 196, 210, 0.4) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
-    /* fake roads */
     .co-map-road-h {
       position: absolute;
       left: 0; right: 0;
-      height: 10px;
-      background: #fff;
-      border-radius: 2px;
+      height: 8px;
+      background: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     }
     .co-map-road-v {
       position: absolute;
       top: 0; bottom: 0;
-      width: 10px;
-      background: #fff;
-      border-radius: 2px;
+      width: 8px;
+      background: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     }
     .co-map-pin {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -100%);
-      width: 28px; height: 28px;
-      background: #000;
+      width: 24px; height: 24px;
+      background: #111113;
+      border-radius: 50% 50% 50% 0;
+      transform: translate(-50%, -100%) rotate(-45deg);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .co-map-pin::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #ffffff;
       border-radius: 50%;
-      border: 3px solid #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
     .co-map-edit {
       position: absolute;
-      bottom: 10px;
+      bottom: 12px;
       left: 50%;
       transform: translateX(-50%);
-      background: #fff;
-      border: none;
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 9999px;
       padding: 6px 14px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'HeimatMono', monospace;
+      letter-spacing: 0.06em;
       cursor: pointer;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: transform 0.15s ease;
     }
+    .co-map-edit:active { transform: translateX(-50%) scale(0.95); }
 
     /* address / phone rows */
     .co-info-block {
-      margin: 0 14px 20px;
-      border: 1px solid #ebebeb;
-      border-radius: 12px;
+      margin: 0 16px 20px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 14px;
       overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
     .co-info-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px;
-      border-bottom: 1px solid #f0f0f0;
+      gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
       cursor: pointer;
+      transition: background 0.15s ease;
     }
+    .co-info-row:hover { background: #fafafa; }
     .co-info-row:last-child { border-bottom: none; }
-    .co-info-icon { font-size: 18px; color: #555; flex-shrink: 0; }
+    .co-info-icon {
+      color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
     .co-info-text-block { flex: 1; }
-    .co-info-label { font-size: 14px; font-weight: 600; color: #000; }
-    .co-info-sub   { font-size: 12px; color: #888; margin-top: 2px; }
-    .co-info-arrow { font-size: 14px; color: #bbb; }
+    .co-info-label { font-size: 13.5px; font-weight: 600; color: #111; letter-spacing: -0.01em; }
+    .co-info-sub   { font-size: 12px; color: #777; margin-top: 2px; }
+    .co-info-arrow { color: #999; display: flex; align-items: center; }
 
     /* summary */
     .co-summary {
@@ -720,17 +1159,19 @@
     }
     .co-pay-btn {
       width: 100%;
-      height: 52px;
+      height: 50px;
       background: #000;
       color: #fff;
       border: none;
-      border-radius: 10px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 16px;
+      border-radius: 9999px;
+      font-family: 'HeimatMono', monospace;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
     }
+    .co-pay-btn:active { transform: scale(0.97); opacity: 0.9; }
 
     /* ════════════════════════
        SCREEN 6 — PAYMENT METHOD
@@ -867,17 +1308,19 @@
     }
     .pm-pay-btn {
       width: 100%;
-      height: 52px;
+      height: 50px;
       background: #000;
       color: #fff;
       border: none;
-      border-radius: 10px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 16px;
+      border-radius: 9999px;
+      font-family: 'HeimatMono', monospace;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
     }
+    .pm-pay-btn:active { transform: scale(0.97); opacity: 0.9; }
 
     /* ════════════════════════
        INPUT BOTTOM SHEET
@@ -1008,29 +1451,47 @@
       line-height: 1;
     }
 
-    /* Tabs: Designs | Collection */
+    /* Tabs: Create New Design | Cart */
     .profile-tabs {
       display: flex;
       justify-content: center;
-      gap: 36px;
-      padding: 18px 0 16px;
+      gap: 32px;
+      padding: 16px 16px 12px;
       background: #fff;
       flex-shrink: 0;
+      border-bottom: 1px solid #f0f0f2;
     }
     .profile-tab {
-      font-size: 16px;
-      color: #666;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: 'HeimatMono', monospace;
+      color: #777;
       cursor: pointer;
-      padding-bottom: 4px;
+      padding-bottom: 6px;
       transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.04em;
     }
     .profile-tab.active {
       color: #000;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: underline;
-      text-underline-offset: 6px;
-      text-decoration-thickness: 1.5px;
+      text-underline-offset: 8px;
+      text-decoration-thickness: 2px;
+    }
+    .profile-cart-badge {
+      background: #ff7a00;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 9999px;
+      display: none;
+    }
+    .profile-cart-badge.has-items {
+      display: inline-flex;
     }
 
     .profile-scroll {
@@ -1143,6 +1604,14 @@
           </svg>
           <input type="text" placeholder="Try 'Spider Man'" readonly />
         </div>
+        <button class="cart-trigger-btn" id="cartBtn" title="Shopping Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
       </div>
 
       <div class="grid-scroll">
@@ -1152,7 +1621,9 @@
 
     <!-- SCREEN 3: Post Detail -->
     <div id="detail">
-      <button class="detail-back" id="backBtn">&#8592;</button>
+      <button class="detail-back" id="backBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
 
       <div class="detail-scroll">
         <!-- Hero image & slider showcasing items -->
@@ -1178,7 +1649,10 @@
             </div>
             <div class="detail-username" id="detailUser">@satyeks</div>
           </div>
-          <button class="buy-btn">BUY NOW</button>
+          <div class="detail-actions">
+            <button class="detail-cart-btn" id="detailCartBtn">+ ADD TO CART</button>
+            <button class="buy-btn">BUY NOW</button>
+          </div>
         </div>
 
         <!-- Related posts (same item, algorithm TBD) -->
@@ -1190,7 +1664,9 @@
 
     <!-- SCREEN 4: Buy Now -->
     <div id="buyScreen">
-      <button class="buy-back" id="buyBackBtn">&#8592;</button>
+      <button class="buy-back" id="buyBackBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
 
       <div class="buy-scroll">
         <img id="buyHero" class="buy-hero" src="" alt="" />
@@ -1206,7 +1682,9 @@
     <!-- SCREEN 5: Checkout -->
     <div id="checkoutScreen">
       <div class="co-header">
-        <button class="co-back" id="coBackBtn">&#8592;</button>
+        <button class="co-back" id="coBackBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
         <span class="co-title">Checkout</span>
       </div>
 
@@ -1226,20 +1704,37 @@
         <!-- Address + Phone -->
         <div class="co-info-block">
           <div class="co-info-row" id="addressRow">
-            <span class="co-info-icon">&#127968;</span>
+            <span class="co-info-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </span>
             <div class="co-info-text-block">
-              <div class="co-info-label">Home</div>
+              <div class="co-info-label">Home Address</div>
               <div class="co-info-sub" id="addressSub">Tap to add your address</div>
             </div>
-            <span class="co-info-arrow">&#8250;</span>
+            <span class="co-info-arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </span>
           </div>
           <div class="co-info-row" id="phoneRow">
-            <span class="co-info-icon">&#128222;</span>
+            <span class="co-info-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </span>
             <div class="co-info-text-block">
-              <div class="co-info-label">Phone number</div>
+              <div class="co-info-label">Phone Number</div>
               <div class="co-info-sub" id="phoneSub">Tap to add your number</div>
             </div>
-            <span class="co-info-arrow">&#8250;</span>
+            <span class="co-info-arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </span>
           </div>
         </div>
 
@@ -1276,17 +1771,19 @@
     <!-- SCREEN 6: Payment Method -->
     <div id="paymentScreen">
       <div class="pm-header">
-        <button class="pm-back" id="pmBackBtn">&#8592;</button>
+        <button class="pm-back" id="pmBackBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
         <span class="pm-title">Select Payment Method</span>
       </div>
 
       <div class="pm-scroll">
         <!-- Revolut Pay -->
         <div class="pm-row" data-method="revolut">
-          <div class="pm-row-icon">&#127968;<!-- replaced by svg below -->
+          <div class="pm-row-icon">
             <svg width="36" height="20" viewBox="0 0 60 20" fill="none">
               <rect width="60" height="20" rx="4" fill="#000"/>
-              <text x="6" y="14" font-size="10" fill="#fff" font-family="Arial" font-weight="bold">Revolut</text>
+              <text x="7" y="14" font-size="10" fill="#fff" font-family="'Heimat Mono', monospace" font-weight="bold">Revolut</text>
             </svg>
           </div>
           <span class="pm-row-label">Revolut Pay</span>
@@ -1297,8 +1794,8 @@
         <div class="pm-row" data-method="apple">
           <div class="pm-row-icon">
             <svg width="36" height="20" viewBox="0 0 60 20" fill="none">
-              <rect width="60" height="20" rx="4" fill="#fff" stroke="#ddd" stroke-width="1"/>
-              <text x="6" y="14" font-size="9" fill="#000" font-family="Arial" font-weight="bold">&#63743; Pay</text>
+              <rect width="60" height="20" rx="4" fill="#fff" stroke="#dcdce0" stroke-width="1.2"/>
+              <text x="8" y="14" font-size="10" fill="#000" font-family="-apple-system, sans-serif" font-weight="bold">&#63743; Pay</text>
             </svg>
           </div>
           <span class="pm-row-label">Apple Pay</span>
@@ -1308,11 +1805,12 @@
         <!-- GPay -->
         <div class="pm-row" data-method="gpay">
           <div class="pm-row-icon">
-            <svg width="32" height="22" viewBox="0 0 32 22" fill="none">
-              <text x="0" y="17" font-size="18" font-family="Arial">🎨</text>
+            <svg width="36" height="20" viewBox="0 0 60 20" fill="none">
+              <rect width="60" height="20" rx="4" fill="#fff" stroke="#dcdce0" stroke-width="1.2"/>
+              <text x="8" y="14" font-size="10" fill="#4285F4" font-family="'Heimat Mono', sans-serif" font-weight="bold">G<tspan fill="#EA4335">P</tspan><tspan fill="#FBBC05">a</tspan><tspan fill="#34A853">y</tspan></text>
             </svg>
           </div>
-          <span class="pm-row-label">GPay</span>
+          <span class="pm-row-label">Google Pay</span>
           <div class="pm-radio" id="radio-gpay"></div>
         </div>
 
@@ -1320,16 +1818,30 @@
 
         <!-- Add new card -->
         <div class="pm-link-row">
-          <div class="pm-link-icon">&#128179;</div>
+          <div class="pm-link-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+              <line x1="1" y1="10" x2="23" y2="10"/>
+            </svg>
+          </div>
           <span class="pm-link-label">Add new card</span>
-          <span class="pm-link-arrow">&#8250;</span>
+          <span class="pm-link-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
         </div>
 
         <!-- PayPal -->
         <div class="pm-link-row">
-          <div class="pm-link-icon" style="color:#003087;font-weight:900;font-size:20px;">&#120121;</div>
+          <div class="pm-link-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M7 3h7c3 0 5 1.5 4.5 4.5-.6 3.5-3 5.5-6.5 5.5H9.5L8 21H5l3-14h-1z" fill="#003087"/>
+              <path d="M10 7h6.5c2.5 0 4 1.2 3.5 3.5-.5 3-2.5 4.5-5.5 4.5H12l-1.2 6H8.5l2.5-12z" fill="#0079C1" opacity="0.85"/>
+            </svg>
+          </div>
           <span class="pm-link-label">Add a PayPal account</span>
-          <span class="pm-link-arrow">&#8250;</span>
+          <span class="pm-link-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
         </div>
       </div>
 
@@ -1347,16 +1859,18 @@
           </div>
           <span class="profile-name">satyeks</span>
         </div>
-        <button class="profile-back-btn" id="profileBackBtn">&#8592;</button>
+        <button class="profile-back-btn" id="profileBackBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
       </div>
 
       <div class="profile-tabs">
-        <div class="profile-tab" id="tabDesigns">Designs</div>
-        <div class="profile-tab active" id="tabCollection">Collection</div>
+        <div class="profile-tab active" id="tabDesigns">Create New Design</div>
+        <div class="profile-tab" id="tabCart">Cart <span id="profileCartCount" class="profile-cart-badge">0</span></div>
       </div>
 
       <div class="profile-scroll">
-        <div id="profileDesignsView" style="display:none;">
+        <div id="profileDesignsView">
           <div class="create-designs-wrapper" id="createDesignsBtn">
             <div class="create-designs-btn">
               <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -1364,12 +1878,106 @@
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
             </div>
-            <div class="create-designs-label">Create Designs</div>
+            <div class="create-designs-label">Create New Design</div>
+          </div>
+          <div class="masonry" id="customDesignsGrid" style="margin-top: 18px;"></div>
+        </div>
+
+        <div id="profileCartView" style="display:none;">
+          <div class="cart-empty" id="profileCartEmpty">
+            <div class="cart-empty-icon">
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+            </div>
+            <div class="cart-empty-title">Your cart is empty</div>
+            <div class="cart-empty-sub">Explore the feed and tap <b>+ Add</b> on any pin to build your phone case collection!</div>
+          </div>
+
+          <div class="cart-items-list" id="profileCartList"></div>
+
+          <div class="cart-summary-card" id="profileCartSummary" style="display:none; margin: 16px 0 0;">
+            <div class="cart-summary-row">
+              <span>Subtotal</span>
+              <span id="profileCartSubtotal">&#8377;0</span>
+            </div>
+            <div class="cart-summary-row">
+              <span>Estimated Shipping</span>
+              <span style="color:#059669; font-weight:600;">FREE</span>
+            </div>
+            <div class="cart-summary-divider"></div>
+            <div class="cart-summary-row cart-total-row">
+              <span>Total</span>
+              <span id="profileCartGrandTotal">&#8377;0</span>
+            </div>
+          </div>
+
+          <div class="cart-checkout-bar" id="profileCartCheckoutWrap" style="display:none; padding: 16px 0 24px; border-top: none;">
+            <button class="cart-checkout-btn" id="profileCartCheckoutBtn">
+              <span>CHECKOUT</span>
+              <span id="profileCartBtnTotal">&#8377;0</span>
+            </button>
           </div>
         </div>
-        <div id="profileCollectionView">
-          <div class="collection-grid" id="collectionGrid"></div>
+      </div>
+    </div>
+
+    <!-- SCREEN 8: Shopping Cart -->
+    <div id="cartScreen">
+      <div class="cart-header">
+        <button class="cart-back-btn" id="cartBackBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="cart-header-title-wrap">
+          <span class="cart-title">SHOPPING CART</span>
+          <span class="cart-item-count" id="cartHeaderCount">0 items</span>
         </div>
+        <button class="cart-clear-btn" id="cartClearBtn">CLEAR</button>
+      </div>
+
+      <div class="cart-scroll">
+        <!-- Empty state -->
+        <div class="cart-empty" id="cartEmptyState">
+          <div class="cart-empty-icon">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <div class="cart-empty-title">Your cart is empty</div>
+          <div class="cart-empty-sub">Explore the feed and tap <b>+ Add</b> on any pin to build your phone case collection!</div>
+        </div>
+
+        <!-- Items list -->
+        <div class="cart-items-list" id="cartItemsList"></div>
+
+        <!-- Order Summary card -->
+        <div class="cart-summary-card" id="cartSummaryCard" style="display:none;">
+          <div class="cart-summary-row">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">&#8377;0</span>
+          </div>
+          <div class="cart-summary-row">
+            <span>Estimated Shipping</span>
+            <span style="color:#059669; font-weight:600;">FREE</span>
+          </div>
+          <div class="cart-summary-divider"></div>
+          <div class="cart-summary-row cart-total-row">
+            <span>Total</span>
+            <span id="cartGrandTotal">&#8377;0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Sticky Bar -->
+      <div class="cart-checkout-bar" id="cartCheckoutBar" style="display:none;">
+        <button class="cart-checkout-btn" id="cartCheckoutBtn">
+          <span>CHECKOUT</span>
+          <span id="cartBtnTotal">&#8377;0</span>
+        </button>
       </div>
     </div>
 
@@ -1393,14 +2001,14 @@
     ];
 
     const posts = [
-      { src: 'Assets/POSTS/post1.png', user: '@satyeks', tags: '#spider #spidey...', items: itemsPost1 },
-      { src: 'Assets/POSTS/post2.png', user: '@satyeks', tags: '#pearl #burgundy...', items: itemsPost2 },
-      { src: 'Assets/POSTS/post3.png', user: '@satyeks', tags: '#flower #clear...', items: itemsPost3 },
-      { src: 'Assets/POSTS/post1.png', user: '@satyeks', tags: '#spider #spidey...', items: itemsPost1 },
-      { src: 'Assets/POSTS/post3.png', user: '@satyeks', tags: '#flower #clear...', items: itemsPost3 },
-      { src: 'Assets/POSTS/post2.png', user: '@satyeks', tags: '#pearl #burgundy...', items: itemsPost2 },
-      { src: 'Assets/POSTS/post3.png', user: '@satyeks', tags: '#flower #clear...', items: itemsPost3 },
-      { src: 'Assets/POSTS/post1.png', user: '@satyeks', tags: '#spider #spidey...', items: itemsPost1 },
+      { id: 'post_spidey_1', title: 'Spider-Punk Edition Case', src: 'Assets/POSTS/post1.png', user: '@satyeks', tags: '#spider #spidey...', items: itemsPost1 },
+      { id: 'post_burgundy_1', title: 'Burgundy Wave Case', src: 'Assets/POSTS/post2.png', user: '@satyeks', tags: '#pearl #burgundy...', items: itemsPost2 },
+      { id: 'post_flower_1', title: 'Clear Marimekko Case', src: 'Assets/POSTS/post3.png', user: '@satyeks', tags: '#flower #clear...', items: itemsPost3 },
+      { id: 'post_spidey_2', title: 'Graffiti Miles Case', src: 'Assets/POSTS/post1.png', user: '@satyeks', tags: '#spider #spidey...', items: itemsPost1 },
+      { id: 'post_flower_2', title: 'Pink Floral Loop Case', src: 'Assets/POSTS/post3.png', user: '@satyeks', tags: '#flower #clear...', items: itemsPost3 },
+      { id: 'post_burgundy_2', title: 'Pearl Burgundy Edition', src: 'Assets/POSTS/post2.png', user: '@satyeks', tags: '#pearl #burgundy...', items: itemsPost2 },
+      { id: 'post_flower_3', title: 'Spring Bloom Clear Case', src: 'Assets/POSTS/post3.png', user: '@satyeks', tags: '#flower #clear...', items: itemsPost3 },
+      { id: 'post_spidey_3', title: 'Spider-Verse Case Bundle', src: 'Assets/POSTS/post1.png', user: '@satyeks', tags: '#spider #spidey...', items: itemsPost1 },
     ];
 
     function getCustomPosts() {
@@ -1408,6 +2016,107 @@
         return JSON.parse(localStorage.getItem('hcp_custom_posts') || '[]');
       } catch(e) {
         return [];
+      }
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    //  CartStore — Persistent Shopping Cart Service
+    // ════════════════════════════════════════════════════════════════
+    const CartStore = {
+      _key: 'hcp_cart_items',
+      getItems() {
+        try {
+          return JSON.parse(localStorage.getItem(this._key) || '[]');
+        } catch(e) {
+          return [];
+        }
+      },
+      saveItems(items) {
+        localStorage.setItem(this._key, JSON.stringify(items));
+        updateCartBadge();
+        if (typeof renderCart === 'function') renderCart();
+      },
+      addItem(post) {
+        const items = this.getItems();
+        const total = (post.items || []).reduce((sum, i) => sum + (i.price || 0), 0);
+        const id = post.id || (post.src + '_' + (post.user || 'post'));
+        const title = post.title || (post.tags ? post.tags.split(' ')[0].replace('#', '').toUpperCase() + ' Case Set' : 'Custom Case Bundle');
+
+        const existing = items.find(i => i.id === id);
+        if (existing) {
+          existing.qty = (existing.qty || 1) + 1;
+        } else {
+          items.push({
+            id: id,
+            title: title,
+            user: post.user || '@designer',
+            src: post.src,
+            price: total,
+            itemCount: (post.items || []).length,
+            items: post.items || [],
+            qty: 1
+          });
+        }
+        this.saveItems(items);
+      },
+      removeItem(id) {
+        const items = this.getItems().filter(i => i.id !== id);
+        this.saveItems(items);
+      },
+      updateQty(id, delta) {
+        const items = this.getItems();
+        const item = items.find(i => i.id === id);
+        if (item) {
+          item.qty = (item.qty || 1) + delta;
+          if (item.qty <= 0) {
+            this.removeItem(id);
+            return;
+          }
+          this.saveItems(items);
+        }
+      },
+      clear() {
+        this.saveItems([]);
+      },
+      getTotal() {
+        return this.getItems().reduce((sum, i) => sum + (i.price * (i.qty || 1)), 0);
+      },
+      getCount() {
+        return this.getItems().reduce((sum, i) => sum + (i.qty || 1), 0);
+      }
+    };
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cartBadge');
+      if (!badge) return;
+      const count = CartStore.getCount();
+      badge.textContent = count;
+      badge.classList.toggle('has-items', count > 0);
+      badge.classList.remove('bump');
+      void badge.offsetWidth;
+      if (count > 0) badge.classList.add('bump');
+    }
+
+    function addPostToCart(p, btn) {
+      CartStore.addItem(p);
+      const total = (p.items || []).reduce((sum, i) => sum + (i.price || 0), 0);
+      const title = p.title || (p.tags ? p.tags.split(' ')[0].replace('#', '') + ' Case' : 'Case Bundle');
+
+      showToast(`Added to cart • ₹${total}`);
+
+      if (btn) {
+        btn.classList.add('added');
+        const origHTML = btn.innerHTML;
+        btn.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span class="pin-cart-text">Added</span>
+        `;
+        setTimeout(() => {
+          btn.classList.remove('added');
+          btn.innerHTML = origHTML;
+        }, 1500);
       }
     }
 
@@ -1419,32 +2128,57 @@
       const customPosts = getCustomPosts();
       const allPosts = [...customPosts, ...posts];
 
-      allPosts.forEach((p) => {
+      allPosts.forEach((p, idx) => {
         const card = document.createElement('div');
         card.className = 'card';
-        const img = document.createElement('img');
-        img.src = p.src;
-        img.loading = 'lazy';
-        card.appendChild(img);
-        card.addEventListener('click', () => openDetail(p));
+        const total = (p.items || []).reduce((sum, item) => sum + (item.price || 0), 0);
+
+        card.innerHTML = `
+          <div class="card-media-wrapper">
+            <img src="${p.src}" loading="lazy" alt="Pin ${idx}" />
+            <button class="pin-cart-btn" title="Add to Cart" aria-label="Add to cart">
+              <span class="pin-cart-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+              </span>
+              <span class="pin-cart-price">&#8377;${total}</span>
+              <span class="pin-cart-sep"></span>
+              <span class="pin-cart-text">Add</span>
+            </button>
+          </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.pin-cart-btn')) return;
+          openDetail(p);
+        });
+
+        const cartBtn = card.querySelector('.pin-cart-btn');
+        cartBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          addPostToCart(p, cartBtn);
+        });
+
         grid.appendChild(card);
       });
     }
 
     renderFeedGrid();
+    updateCartBadge();
 
-    // ── profile avatar click -> open profile & collection screen ──
+    // ── profile avatar click -> open profile & cart screen ──
     const profileAvatarBtn = document.getElementById('profileAvatarBtn');
     const profileScreen    = document.getElementById('profileScreen');
     const profileBackBtn   = document.getElementById('profileBackBtn');
     const tabDesigns       = document.getElementById('tabDesigns');
-    const tabCollection    = document.getElementById('tabCollection');
-    const profileDesignsView    = document.getElementById('profileDesignsView');
-    const profileCollectionView = document.getElementById('profileCollectionView');
-    const collectionGrid   = document.getElementById('collectionGrid');
-    const profileGrid      = document.getElementById('profileGrid');
+    const tabCart          = document.getElementById('tabCart');
+    const profileDesignsView = document.getElementById('profileDesignsView');
+    const profileCartView    = document.getElementById('profileCartView');
 
-    function openProfile(initialTab = 'collection') {
+    function openProfile(initialTab = 'designs') {
       switchProfileTab(initialTab);
       profileScreen.classList.add('open');
     }
@@ -1452,57 +2186,107 @@
     function switchProfileTab(tab) {
       if (tab === 'designs') {
         tabDesigns.classList.add('active');
-        tabCollection.classList.remove('active');
+        if (tabCart) tabCart.classList.remove('active');
         profileDesignsView.style.display = 'block';
-        profileCollectionView.style.display = 'none';
+        if (profileCartView) profileCartView.style.display = 'none';
         renderProfileDesigns();
       } else {
-        tabCollection.classList.add('active');
+        if (tabCart) tabCart.classList.add('active');
         tabDesigns.classList.remove('active');
-        profileCollectionView.style.display = 'block';
+        if (profileCartView) profileCartView.style.display = 'block';
         profileDesignsView.style.display = 'none';
-        renderCollection();
+        renderProfileCart();
       }
     }
 
-    function renderCollection() {
-      const items = CollectionStore.getAll();
-      collectionGrid.innerHTML = '';
+    function renderProfileCart() {
+      const items = CartStore.getItems();
+      const count = CartStore.getCount();
+      const total = CartStore.getTotal();
+
+      const profileCartCount = document.getElementById('profileCartCount');
+      if (profileCartCount) {
+        profileCartCount.textContent = count;
+        profileCartCount.classList.toggle('has-items', count > 0);
+      }
+
+      const emptyEl = document.getElementById('profileCartEmpty');
+      const listEl = document.getElementById('profileCartList');
+      const sumEl = document.getElementById('profileCartSummary');
+      const wrapEl = document.getElementById('profileCartCheckoutWrap');
+      const subtotalEl = document.getElementById('profileCartSubtotal');
+      const totalEl = document.getElementById('profileCartGrandTotal');
+      const btnTotalEl = document.getElementById('profileCartBtnTotal');
+
       if (items.length === 0) {
-        collectionGrid.innerHTML = `
-          <div class="collection-empty" style="grid-column: 1 / -1;">
-            <p style="font-weight:600; color:#333;">Your collection is empty.</p>
-            <p style="font-size:12px; color:#999; margin-top:6px;">Swipe right-to-left on any post and tap <b>+</b> to save items here!</p>
-          </div>
-        `;
+        if (emptyEl) emptyEl.style.display = 'flex';
+        if (listEl) listEl.innerHTML = '';
+        if (sumEl) sumEl.style.display = 'none';
+        if (wrapEl) wrapEl.style.display = 'none';
         return;
       }
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'collection-card';
-        card.innerHTML = `
-          <img class="collection-card-img" src="${item.img}" alt="${item.name}" />
-          <div class="collection-card-name">${item.name}</div>
-        `;
-        collectionGrid.appendChild(card);
+
+      if (emptyEl) emptyEl.style.display = 'none';
+      if (sumEl) sumEl.style.display = 'block';
+      if (wrapEl) wrapEl.style.display = 'block';
+
+      if (subtotalEl) subtotalEl.innerHTML = `&#8377;${total}`;
+      if (totalEl) totalEl.innerHTML = `&#8377;${total}`;
+      if (btnTotalEl) btnTotalEl.innerHTML = `&#8377;${total}`;
+
+      if (listEl) {
+        listEl.innerHTML = '';
+        items.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'cart-item';
+          row.dataset.id = item.id;
+          row.innerHTML = `
+            <img class="cart-item-thumb" src="${item.src}" alt="${item.title}" />
+            <div class="cart-item-info">
+              <div class="cart-item-title">${item.title}</div>
+              <div class="cart-item-sub">${item.user} &bull; ${item.itemCount || 1} items bundle</div>
+              <div class="cart-item-bottom">
+                <div class="cart-item-price">&#8377;${item.price * item.qty}</div>
+                <div class="cart-qty-control">
+                  <button class="cart-qty-btn cart-qty-minus" title="Decrease">&minus;</button>
+                  <span class="cart-qty-val">${item.qty}</span>
+                  <button class="cart-qty-btn cart-qty-plus" title="Increase">&plus;</button>
+                </div>
+              </div>
+            </div>
+            <button class="cart-item-remove" title="Remove item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          `;
+
+          row.querySelector('.cart-qty-minus').addEventListener('click', () => {
+            CartStore.updateQty(item.id, -1);
+          });
+          row.querySelector('.cart-qty-plus').addEventListener('click', () => {
+            CartStore.updateQty(item.id, 1);
+          });
+          row.querySelector('.cart-item-remove').addEventListener('click', () => {
+            CartStore.removeItem(item.id);
+            showToast('Item removed from cart');
+          });
+
+          listEl.appendChild(row);
+        });
+      }
+    }
+
+    const profileCartCheckoutBtn = document.getElementById('profileCartCheckoutBtn');
+    if (profileCartCheckoutBtn) {
+      profileCartCheckoutBtn.addEventListener('click', () => {
+        profileScreen.classList.remove('open');
+        openCheckoutFromCart();
       });
     }
 
     function renderProfileDesigns() {
       const customPosts = getCustomPosts();
-      profileDesignsView.innerHTML = `
-        <div class="create-designs-wrapper" id="createDesignsBtn">
-          <div class="create-designs-btn">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-          </div>
-          <div class="create-designs-label">Create Designs</div>
-        </div>
-        ${customPosts.length > 0 ? '<div class="masonry" id="customDesignsGrid" style="margin-top:24px;"></div>' : ''}
-      `;
-
+      const customGrid = document.getElementById('customDesignsGrid');
+      
       const btn = document.getElementById('createDesignsBtn');
       if (btn) {
         btn.onclick = () => {
@@ -1510,33 +2294,55 @@
         };
       }
 
-      const customGrid = document.getElementById('customDesignsGrid');
-      if (customGrid && customPosts.length > 0) {
-        customPosts.forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          const img = document.createElement('img');
-          img.src = p.src;
-          img.loading = 'lazy';
-          card.appendChild(img);
-          card.addEventListener('click', () => {
-            profileScreen.classList.remove('open');
-            openDetail(p);
+      if (customGrid) {
+        customGrid.innerHTML = '';
+        if (customPosts.length > 0) {
+          customPosts.forEach((p, idx) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const total = (p.items || []).reduce((sum, item) => sum + (item.price || 0), 0);
+            card.innerHTML = `
+              <div class="card-media-wrapper">
+                <img src="${p.src}" loading="lazy" alt="Design ${idx}" />
+                <button class="pin-cart-btn" title="Add to Cart" aria-label="Add to cart">
+                  <span class="pin-cart-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                      <line x1="3" y1="6" x2="21" y2="6"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                  </span>
+                  <span class="pin-cart-price">&#8377;${total}</span>
+                  <span class="pin-cart-sep"></span>
+                  <span class="pin-cart-text">Add</span>
+                </button>
+              </div>
+            `;
+            card.addEventListener('click', (e) => {
+              if (e.target.closest('.pin-cart-btn')) return;
+              profileScreen.classList.remove('open');
+              openDetail(p);
+            });
+            const cartBtn = card.querySelector('.pin-cart-btn');
+            cartBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              addPostToCart(p, cartBtn);
+            });
+            customGrid.appendChild(card);
           });
-          customGrid.appendChild(card);
-        });
+        }
       }
     }
 
     if (profileAvatarBtn) {
       profileAvatarBtn.addEventListener('click', () => {
         profileAvatarBtn.classList.add('has-ring');
-        openProfile('collection');
+        openProfile('designs');
       });
     }
 
-    tabDesigns.addEventListener('click', () => switchProfileTab('designs'));
-    tabCollection.addEventListener('click', () => switchProfileTab('collection'));
+    if (tabDesigns) tabDesigns.addEventListener('click', () => switchProfileTab('designs'));
+    if (tabCart) tabCart.addEventListener('click', () => switchProfileTab('cart'));
     profileBackBtn.addEventListener('click', () => profileScreen.classList.remove('open'));
 
     // Check if returning from studio.html
@@ -1737,16 +2543,43 @@
       relatedGrid.innerHTML = '';
       for (let i = 0; i < 4; i++) {
         const rc = document.createElement('div');
-        rc.className = 'related-card';
-        const ri = document.createElement('img');
-        ri.src = post.src;
-        ri.loading = 'lazy';
-        rc.appendChild(ri);
+        rc.className = 'card related-card';
+        const total = (post.items || []).reduce((sum, item) => sum + (item.price || 0), 0);
+        rc.innerHTML = `
+          <div class="card-media-wrapper">
+            <img src="${post.src}" loading="lazy" alt="Related ${i}" />
+            <button class="pin-cart-btn" title="Add to Cart" aria-label="Add to cart">
+              <span class="pin-cart-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+              </span>
+              <span class="pin-cart-price">&#8377;${total}</span>
+              <span class="pin-cart-sep"></span>
+              <span class="pin-cart-text">Add</span>
+            </button>
+          </div>
+        `;
+        const cartBtn = rc.querySelector('.pin-cart-btn');
+        cartBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          addPostToCart(post, cartBtn);
+        });
         relatedGrid.appendChild(rc);
       }
 
-      // wire up BUY NOW button with current post
-      document.querySelector('.buy-btn').onclick = () => openBuy(post);
+      // wire up BUY NOW and ADD TO CART button with current post
+      const buyBtn = document.querySelector('.buy-btn');
+      if (buyBtn) buyBtn.onclick = () => openBuy(post);
+
+      const detailCartBtn = document.getElementById('detailCartBtn');
+      if (detailCartBtn) {
+        detailCartBtn.onclick = () => {
+          addPostToCart(post, detailCartBtn);
+        };
+      }
 
       // scroll detail back to top then slide in
       detail.querySelector('.detail-scroll').scrollTop = 0;
@@ -2025,8 +2858,146 @@
       // TODO: integrate real payment gateway here
       // For now: store selected method and show confirmation
       UserStore.set('paymentMethod', selectedMethod);
+      CartStore.clear();
       alert(`Order placed via ${selectedMethod}! \u2705`);
+      paymentScreen.classList.remove('open');
+      checkoutScreen.classList.remove('open');
+      buyScreen.classList.remove('open');
+      detail.classList.remove('open');
     });
+
+    // ────────────────────────────────────────────
+    //  SCREEN 8: Shopping Cart Screen wiring
+    // ────────────────────────────────────────────
+    const cartScreen       = document.getElementById('cartScreen');
+    const cartBtn          = document.getElementById('cartBtn');
+    const cartBackBtn      = document.getElementById('cartBackBtn');
+    const cartClearBtn     = document.getElementById('cartClearBtn');
+    const cartEmptyState   = document.getElementById('cartEmptyState');
+    const cartItemsList    = document.getElementById('cartItemsList');
+    const cartSummaryCard  = document.getElementById('cartSummaryCard');
+    const cartCheckoutBar  = document.getElementById('cartCheckoutBar');
+    const cartCheckoutBtn  = document.getElementById('cartCheckoutBtn');
+    const cartHeaderCount  = document.getElementById('cartHeaderCount');
+    const cartSubtotal     = document.getElementById('cartSubtotal');
+    const cartGrandTotal   = document.getElementById('cartGrandTotal');
+    const cartBtnTotal     = document.getElementById('cartBtnTotal');
+
+    function openCart() {
+      renderCart();
+      cartScreen.classList.add('open');
+    }
+
+    function closeCart() {
+      cartScreen.classList.remove('open');
+    }
+
+    function renderCart() {
+      const items = CartStore.getItems();
+      const count = CartStore.getCount();
+      const total = CartStore.getTotal();
+
+      if (cartHeaderCount) {
+        cartHeaderCount.textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+      }
+
+      if (items.length === 0) {
+        if (cartEmptyState) cartEmptyState.style.display = 'flex';
+        if (cartItemsList) cartItemsList.innerHTML = '';
+        if (cartSummaryCard) cartSummaryCard.style.display = 'none';
+        if (cartCheckoutBar) cartCheckoutBar.style.display = 'none';
+        return;
+      }
+
+      if (cartEmptyState) cartEmptyState.style.display = 'none';
+      if (cartSummaryCard) cartSummaryCard.style.display = 'block';
+      if (cartCheckoutBar) cartCheckoutBar.style.display = 'block';
+
+      if (cartSubtotal) cartSubtotal.innerHTML = `&#8377;${total}`;
+      if (cartGrandTotal) cartGrandTotal.innerHTML = `&#8377;${total}`;
+      if (cartBtnTotal) cartBtnTotal.innerHTML = `&#8377;${total}`;
+
+      if (cartItemsList) {
+        cartItemsList.innerHTML = '';
+        items.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'cart-item';
+          row.dataset.id = item.id;
+          row.innerHTML = `
+            <img class="cart-item-thumb" src="${item.src}" alt="${item.title}" />
+            <div class="cart-item-info">
+              <div class="cart-item-title">${item.title}</div>
+              <div class="cart-item-sub">${item.user} &bull; ${item.itemCount || (item.items && item.items.length) || 1} items bundle</div>
+              <div class="cart-item-bottom">
+                <div class="cart-item-price">&#8377;${item.price * item.qty}</div>
+                <div class="cart-qty-control">
+                  <button class="cart-qty-btn cart-qty-minus" title="Decrease">&minus;</button>
+                  <span class="cart-qty-val">${item.qty}</span>
+                  <button class="cart-qty-btn cart-qty-plus" title="Increase">&plus;</button>
+                </div>
+              </div>
+            </div>
+            <button class="cart-item-remove" title="Remove item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          `;
+
+          row.querySelector('.cart-qty-minus').addEventListener('click', () => {
+            CartStore.updateQty(item.id, -1);
+          });
+          row.querySelector('.cart-qty-plus').addEventListener('click', () => {
+            CartStore.updateQty(item.id, 1);
+          });
+          row.querySelector('.cart-item-remove').addEventListener('click', () => {
+            CartStore.removeItem(item.id);
+            showToast('Item removed from cart');
+          });
+
+          cartItemsList.appendChild(row);
+        });
+      }
+    }
+
+    if (cartBtn) cartBtn.addEventListener('click', () => openProfile('cart'));
+    if (cartBackBtn) cartBackBtn.addEventListener('click', closeCart);
+    if (cartClearBtn) {
+      cartClearBtn.addEventListener('click', () => {
+        if (CartStore.getCount() === 0) return;
+        if (confirm('Clear all items from your cart?')) {
+          CartStore.clear();
+          showToast('Cart cleared');
+        }
+      });
+    }
+
+    function openCheckoutFromCart() {
+      const cartItems = CartStore.getItems();
+      if (cartItems.length === 0) return;
+
+      coSummaryRows.innerHTML = '';
+      let subtotal = 0;
+
+      cartItems.forEach(cartItem => {
+        const row = document.createElement('div');
+        row.className = 'co-summary-row';
+        const itemTotal = cartItem.price * cartItem.qty;
+        subtotal += itemTotal;
+        row.innerHTML = `<span>${cartItem.title} (${cartItem.qty}x)</span><span>&#8377;${itemTotal}</span>`;
+        coSummaryRows.appendChild(row);
+      });
+
+      coTotal.textContent = `₹${subtotal + 100}`;
+      refreshUserInfo();
+      checkoutScreen.querySelector('.co-scroll').scrollTop = 0;
+      checkoutScreen.classList.add('open');
+    }
+
+    if (cartCheckoutBtn) {
+      cartCheckoutBtn.addEventListener('click', () => {
+        closeCart();
+        openCheckoutFromCart();
+      });
+    }
 
     // ── loading → feed ──
     const loading = document.getElementById('loading');

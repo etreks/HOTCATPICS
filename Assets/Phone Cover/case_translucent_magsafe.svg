@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 650" width="320" height="650">
+  <defs>
+    <!-- Frosted Drop Shadow -->
+    <filter id="caseShadow" x="-15%" y="-10%" width="130%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#000000" flood-opacity="0.65" />
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+
+    <!-- Camera Plateau Shadow -->
+    <filter id="plateauShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+
+    <!-- Lens Specular Gradient -->
+    <radialGradient id="lensReflect" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#4a5b78" stop-opacity="0.8" />
+      <stop offset="40%" stop-color="#1d2636" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#080a0f" stop-opacity="1" />
+    </radialGradient>
+
+    <!-- Glass Highlights -->
+    <linearGradient id="edgeGleam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="25%" stop-color="#ffffff" stop-opacity="0.2" />
+      <stop offset="70%" stop-color="#d4dbe8" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.6" />
+    </linearGradient>
+
+    <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eef1f6" stop-opacity="0.42" />
+      <stop offset="50%" stop-color="#dce1eb" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#cfd5e2" stop-opacity="0.38" />
+    </linearGradient>
+
+    <linearGradient id="plateauGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5f7fa" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#d2d8e2" stop-opacity="0.75" />
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#caseShadow)">
+    <!-- 1. Outer Translucent Bumper Case -->
+    <rect x="5" y="5" width="310" height="640" rx="58" ry="58"
+          fill="rgba(235, 240, 248, 0.16)" 
+          stroke="url(#edgeGleam)" 
+          stroke-width="3" />
+
+    <!-- Corner drop protection bumpers -->
+    <path d="M 12 60 C 8 36, 36 8, 60 12" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.45" />
+    <path d="M 260 12 C 284 8, 312 36, 308 60" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.45" />
+    <path d="M 12 590 C 8 614, 36 642, 60 638" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.45" />
+    <path d="M 260 638 C 284 642, 312 614, 308 590" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.45" />
+
+    <!-- 2. Titanium Frame & Glass Back -->
+    <rect x="14" y="14" width="292" height="622" rx="50" ry="50"
+          fill="url(#bodyGradient)" 
+          stroke="rgba(255, 255, 255, 0.4)" 
+          stroke-width="1.8" />
+
+    <!-- 3. MagSafe Magnetic Array -->
+    <g id="magsafe" opacity="0.92">
+      <!-- Outer & Inner Rings for crisp frosted look -->
+      <circle cx="160" cy="330" r="74" fill="none" stroke="#ffffff" stroke-width="10" opacity="0.95" />
+      <!-- Orientation Line at bottom -->
+      <rect x="156" y="415" width="8" height="24" rx="4" fill="#ffffff" opacity="0.95" />
+    </g>
+
+    <!-- 4. Camera Plateau Island -->
+    <g id="camera-island" filter="url(#plateauShadow)">
+      <rect x="26" y="26" width="138" height="146" rx="36" ry="36"
+            fill="url(#plateauGradient)" 
+            stroke="#ffffff" 
+            stroke-width="2" />
+      
+      <!-- Top Left Lens -->
+      <g transform="translate(64, 64)">
+        <!-- Outer Titanium Bezel -->
+        <circle cx="0" cy="0" r="26" fill="#bcc3cc" stroke="#ffffff" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="23" fill="#363d47" stroke="#111" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="19" fill="url(#lensReflect)" />
+        <circle cx="0" cy="0" r="10" fill="#08090d" />
+        <!-- Glint highlight -->
+        <circle cx="-6" cy="-6" r="3" fill="#ffffff" opacity="0.75" />
+        <circle cx="5" cy="5" r="1.5" fill="#4fa3ff" opacity="0.6" />
+      </g>
+
+      <!-- Bottom Left Lens -->
+      <g transform="translate(64, 134)">
+        <circle cx="0" cy="0" r="26" fill="#bcc3cc" stroke="#ffffff" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="23" fill="#363d47" stroke="#111" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="19" fill="url(#lensReflect)" />
+        <circle cx="0" cy="0" r="10" fill="#08090d" />
+        <circle cx="-6" cy="-6" r="3" fill="#ffffff" opacity="0.75" />
+        <circle cx="5" cy="5" r="1.5" fill="#4fa3ff" opacity="0.6" />
+      </g>
+
+      <!-- Right Lens -->
+      <g transform="translate(126, 99)">
+        <circle cx="0" cy="0" r="26" fill="#bcc3cc" stroke="#ffffff" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="23" fill="#363d47" stroke="#111" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="19" fill="url(#lensReflect)" />
+        <circle cx="0" cy="0" r="10" fill="#08090d" />
+        <circle cx="-6" cy="-6" r="3" fill="#ffffff" opacity="0.75" />
+        <circle cx="5" cy="5" r="1.5" fill="#4fa3ff" opacity="0.6" />
+      </g>
+
+      <!-- True Tone Flash -->
+      <circle cx="126" cy="54" r="9" fill="#fcfcf0" stroke="#d5dae0" stroke-width="2" />
+      <circle cx="126" cy="54" r="5" fill="#ffecb3" opacity="0.8" />
+
+      <!-- LiDAR Sensor -->
+      <circle cx="126" cy="144" r="8" fill="#1b1d22" stroke="#444a54" stroke-width="1.5" />
+
+      <!-- Microphone Hole -->
+      <circle cx="148" cy="99" r="2.2" fill="#22262c" />
+    </g>
+
+    <!-- Subtle Diagonal Specular Reflection across back -->
+    <path d="M 14 260 L 220 14 L 260 14 L 14 310 Z" fill="#ffffff" opacity="0.08" />
+  </g>
+</svg>

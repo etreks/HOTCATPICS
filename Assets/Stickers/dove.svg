@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 130" width="160" height="130">
+  <!-- Red Fan Tail -->
+  <g id="tail">
+    <path d="M 50 62 L 6 36 Q 4 58, 6 78 Q 7 92, 10 102 L 50 78 Z" fill="#eb4329" />
+    <path d="M 6 36 L 50 64" stroke="#fcfaf2" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M 6 58 L 50 68" stroke="#fcfaf2" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M 7 78 L 50 72" stroke="#fcfaf2" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M 10 102 L 50 76" stroke="#fcfaf2" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+  <!-- Ivory White Dove Body & Wings -->
+  <g id="body">
+    <!-- Flying Bird Silhouette -->
+    <path d="M 45 70 
+             C 45 50, 52 32, 60 22 
+             C 65 17, 72 18, 72 26
+             C 74 15, 84 16, 85 27
+             C 88 18, 98 22, 97 34
+             C 96 46, 92 56, 110 52
+             C 126 48, 140 54, 148 65
+             C 152 70, 156 72, 156 74
+             C 154 77, 146 76, 140 82
+             C 134 88, 126 90, 120 90
+             C 106 90, 96 108, 86 112
+             C 80 114, 76 104, 76 96
+             C 70 106, 62 108, 58 100
+             C 54 92, 56 84, 45 70 Z" 
+          fill="#fbfaf5" />
+    <!-- Cyan eye -->
+    <circle cx="140" cy="70" r="3.2" fill="#00c4cc" />
+    <circle cx="140" cy="70" r="1.5" fill="#111111" />
+  </g>
+</svg>

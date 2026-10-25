@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 120" width="140" height="120">
+  <!-- Navy square tile base -->
+  <rect x="0" y="0" width="140" height="120" rx="4" fill="#0d1b3e"/>
+  
+  <!-- Wave layer 1: Sky / Powder Blue -->
+  <path d="M 0 38 Q 17.5 24 35 38 T 70 38 T 105 38 T 140 38 L 140 120 L 0 120 Z" fill="#8cb9ea"/>
+  
+  <!-- Wave layer 2: Pure White Ribbon -->
+  <path d="M 0 50 Q 17.5 36 35 50 T 70 50 T 105 50 T 140 50 L 140 120 L 0 120 Z" fill="#ffffff"/>
+  
+  <!-- Wave layer 3: Cerulean / Royal Blue -->
+  <path d="M 0 64 Q 17.5 50 35 64 T 70 64 T 105 64 T 140 64 L 140 120 L 0 120 Z" fill="#356cb1"/>
+  
+  <!-- Wave layer 4: Deep Navy base -->
+  <path d="M 0 78 Q 17.5 64 35 78 T 70 78 T 105 78 T 140 78 L 140 120 L 0 120 Z" fill="#0f2249"/>
+</svg>

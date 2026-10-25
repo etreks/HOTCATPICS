@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 120" width="140" height="120">
+  <!-- Wings Pink Base -->
+  <g id="wings">
+    <!-- Top Left Wing -->
+    <path d="M 68 55 C 50 15, 12 18, 12 45 C 12 62, 35 68, 68 62 Z" fill="#f279b5" />
+    <!-- Bottom Left Wing -->
+    <path d="M 68 65 C 38 68, 20 80, 25 102 C 28 114, 50 114, 68 85 Z" fill="#f279b5" />
+    
+    <!-- Top Right Wing -->
+    <path d="M 72 55 C 90 15, 128 18, 128 45 C 128 62, 105 68, 72 62 Z" fill="#f279b5" />
+    <!-- Bottom Right Wing -->
+    <path d="M 72 65 C 102 68, 120 80, 115 102 C 112 114, 90 114, 72 85 Z" fill="#f279b5" />
+    
+    <!-- Periwinkle Wing Insets -->
+    <!-- Top Left Spot -->
+    <ellipse cx="40" cy="46" rx="14" ry="12" fill="#88a8f4" />
+    <!-- Bottom Left Spot -->
+    <ellipse cx="44" cy="88" rx="10" ry="10" fill="#88a8f4" />
+    
+    <!-- Top Right Spot -->
+    <ellipse cx="100" cy="46" rx="14" ry="12" fill="#88a8f4" />
+    <!-- Bottom Right Spot -->
+    <ellipse cx="96" cy="88" rx="10" ry="10" fill="#88a8f4" />
+  </g>
+
+  <!-- Butterfly Body & Antennae -->
+  <g id="body" stroke="#1a1a1a" stroke-linecap="round">
+    <ellipse cx="70" cy="68" rx="3.5" ry="22" fill="#1a1a1a" />
+    <circle cx="70" cy="44" r="4.5" fill="#1a1a1a" />
+    <!-- Antennae -->
+    <path d="M 69 42 Q 62 30, 56 26 Q 52 24, 48 26" fill="none" stroke-width="2.2" />
+    <path d="M 71 42 Q 78 30, 84 26 Q 88 24, 92 26" fill="none" stroke-width="2.2" />
+  </g>
+</svg>

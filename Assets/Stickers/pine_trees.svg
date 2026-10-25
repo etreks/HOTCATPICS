@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 60" width="70" height="60">
+  <!-- Left Tree (Smaller) -->
+  <polygon points="18,12 32,42 4,42" fill="#136940" />
+  <rect x="15" y="42" width="6" height="10" fill="#1b2a22" />
+  
+  <!-- Right Tree (Larger) -->
+  <polygon points="46,2 66,42 26,42" fill="#136940" />
+  <rect x="42" y="42" width="8" height="12" fill="#1b2a22" />
+</svg>

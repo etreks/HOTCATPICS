@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 70" width="260" height="70">
+  <!-- Art-directed cursive script "Take it easy" with signature flourish -->
+  <g fill="none" stroke="#121214" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-4, 130, 35)">
+    <!-- T -->
+    <path d="M 16 28 C 24 24, 38 22, 52 20" stroke-width="3" />
+    <path d="M 32 21 C 28 34, 25 48, 27 52 C 28 54, 32 52, 36 46" />
+    
+    <!-- a -->
+    <path d="M 44 42 C 40 37, 44 32, 50 32 C 55 32, 57 37, 56 46 C 56 50, 56 50, 58 48 C 60 45, 60 38, 59 34 L 58 50" />
+    
+    <!-- k -->
+    <path d="M 68 20 L 68 50 M 68 40 C 74 34, 78 35, 74 41 C 71 44, 76 46, 80 50" />
+    
+    <!-- e -->
+    <path d="M 88 43 C 94 41, 95 35, 91 34 C 86 34, 84 41, 88 48 C 92 51, 98 48, 102 44" />
+    
+    <!-- i -->
+    <path d="M 115 36 L 115 49 M 115 27 L 115 29" stroke-width="3.2" />
+    
+    <!-- t -->
+    <path d="M 127 25 L 127 48 C 127 51, 131 51, 134 48 M 121 36 L 132 36" />
+    
+    <!-- e -->
+    <path d="M 148 43 C 154 41, 155 35, 151 34 C 146 34, 144 41, 148 48 C 152 51, 157 48, 161 44" />
+    
+    <!-- a -->
+    <path d="M 172 42 C 168 37, 172 33, 177 33 C 182 33, 184 38, 183 46 C 183 50, 185 45, 186 35 L 186 49" />
+    
+    <!-- s -->
+    <path d="M 196 46 C 193 49, 198 51, 201 48 C 204 45, 195 40, 199 35 C 202 32, 206 35, 205 38" />
+    
+    <!-- y with flowing rightward underline sweep -->
+    <path d="M 213 36 C 213 42, 215 47, 219 47 C 223 47, 226 42, 228 35 L 228 50 C 227 57, 223 64, 216 65 C 210 65, 209 60, 214 55 C 218 51, 224 49, 235 44 L 254 36" stroke-width="3.2" />
+  </g>
+</svg>

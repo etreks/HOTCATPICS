@@ -7,7 +7,7 @@
   <style>
     @font-face {
       font-family: 'Heimat Mono';
-      src: url('assets/fonts/Heimat Mono.ttf') format('truetype');
+      src: url('Assets/fonts/Heimat Mono.ttf') format('truetype');
       font-weight: bold;
       font-style: normal;
     }
@@ -21,7 +21,7 @@
 
     body {
       background: #000;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -34,7 +34,7 @@
       max-width: 430px;
       height: 100vh;
       max-height: 932px;
-      background: #111113;
+      background: #09090b;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -42,16 +42,18 @@
       color: #fff;
     }
 
-    /* Top Control Bar */
+    /* ══════════════════════════════════════════════
+       Top Studio Header
+    ══════════════════════════════════════════════ */
     .studio-header {
-      height: 56px;
+      height: 54px;
       padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      z-index: 20;
-      background: rgba(17, 17, 19, 0.8);
-      backdrop-filter: blur(10px);
+      z-index: 40;
+      background: rgba(9, 9, 11, 0.85);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -59,10 +61,8 @@
       background: none;
       border: none;
       color: #fff;
-      font-size: 22px;
       cursor: pointer;
       padding: 6px;
-      line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -71,9 +71,9 @@
     .header-btn:active { opacity: 0.6; }
 
     .header-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       font-family: 'Heimat Mono', monospace;
       color: #fff;
@@ -83,17 +83,20 @@
       background: #fff;
       color: #000;
       border: none;
-      border-radius: 18px;
-      padding: 6px 14px;
-      font-size: 12px;
+      border-radius: 9999px;
+      padding: 6px 15px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       cursor: pointer;
+      font-family: 'Heimat Mono', monospace;
       transition: transform 0.15s, opacity 0.15s;
     }
-    .done-btn:active { transform: scale(0.94); opacity: 0.9; }
+    .done-btn:active { transform: scale(0.95); opacity: 0.9; }
 
-    /* Canvas Stage Area */
+    /* ══════════════════════════════════════════════
+       Canvas Stage Area & Dark Architectural Grid
+    ══════════════════════════════════════════════ */
     .studio-stage {
       flex: 1;
       position: relative;
@@ -101,18 +104,62 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      background: radial-gradient(circle at center, #1e1e24 0%, #0d0d10 100%);
+      background-color: #09090b;
+      /* Subtle dark blueprint grid (48px squares) */
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 48px 48px;
+      background-position: center center;
     }
 
-    /* Phone Case Base */
+    /* Vertical and Horizontal Dashed Center Crosshairs */
+    .grid-crosshair-v {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+      border-left: 1px dashed rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .grid-crosshair-h {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Blueprint Intersection Dots */
+    .grid-dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.45);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ══════════════════════════════════════════════
+       Central Dominant Phone Case Container
+    ══════════════════════════════════════════════ */
     .phone-case-container {
-      width: 240px;
-      height: 440px;
+      width: 260px;
+      height: 520px;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
+      z-index: 10;
     }
 
     .phone-cover-img {
@@ -120,18 +167,26 @@
       height: 100%;
       object-fit: contain;
       pointer-events: none;
-      filter: drop-shadow(0 12px 28px rgba(0,0,0,0.5));
+      filter: drop-shadow(0 20px 48px rgba(0, 0, 0, 0.75));
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Sticker / Charm Overlay Layer */
+    /* ══════════════════════════════════════════════
+       Interactive Placed Items & Selection Frames
+    ══════════════════════════════════════════════ */
     .placed-item {
       position: absolute;
       touch-action: none;
       user-select: none;
-      cursor: move;
+      cursor: grab;
       display: inline-block;
-      padding: 6px;
+      padding: 0;
+      transform-origin: center center;
+      transition: box-shadow 0.15s ease;
+      z-index: 15;
+    }
+    .placed-item:active {
+      cursor: grabbing;
     }
 
     .placed-item img {
@@ -142,71 +197,138 @@
       pointer-events: none;
     }
 
-    /* Selection Ring & Control Handles */
+    /* Reference: Vibrant Orange Selection Frame */
     .placed-item.selected {
-      outline: 1.5px dashed rgba(255, 255, 255, 0.8);
-      outline-offset: 2px;
+      outline: 1.5px solid #ff7a00;
+      outline-offset: 1px;
+      z-index: 30;
     }
 
-    .handle-btn {
+    /* White Handles at corners */
+    .handle-dot {
       position: absolute;
-      width: 22px;
-      height: 22px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: #fff;
-      color: #000;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+      display: none;
+      pointer-events: none;
+      z-index: 35;
+    }
+
+    .placed-item.selected .handle-dot {
+      display: block;
+    }
+
+    .handle-tl { top: -4px; left: -4px; }
+    .handle-tr { top: -4px; right: -4px; }
+    .handle-bl { bottom: -4px; left: -4px; }
+    .handle-br { bottom: -4px; right: -4px; }
+    .handle-tc { top: -4px; left: calc(50% - 3.5px); }
+    .handle-bc { bottom: -4px; left: calc(50% - 3.5px); }
+    .handle-ml { top: calc(50% - 3.5px); left: -4px; }
+    .handle-mr { top: calc(50% - 3.5px); right: -4px; }
+
+    /* Circular White Rotation Handle with ↺ Arrow */
+    .rotate-handle {
+      position: absolute;
+      bottom: -13px;
+      right: -13px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #111;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      z-index: 36;
+      transition: transform 0.15s ease;
+    }
+    .rotate-handle:hover {
+      transform: scale(1.15);
+    }
+    .rotate-handle:active {
+      transform: scale(0.92);
+    }
+    .placed-item.selected .rotate-handle {
+      display: flex;
+    }
+
+    /* ══════════════════════════════════════════════
+       Floating White Pill Toolbar
+    ══════════════════════════════════════════════ */
+    .floating-pill-toolbar {
+      position: absolute;
+      top: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      border-radius: 9999px;
+      height: 28px;
+      padding: 0 10px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+      z-index: 50;
+      white-space: nowrap;
+      pointer-events: auto;
+    }
+
+    .placed-item.selected .floating-pill-toolbar {
+      display: flex;
+    }
+
+    .pill-btn {
+      background: none;
+      border: none;
+      color: #1a1a1a;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      cursor: pointer;
-      display: none;
-      z-index: 10;
+      padding: 2px;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .pill-btn:hover {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+    .pill-btn:active {
+      transform: scale(0.9);
     }
 
-    .placed-item.selected .handle-btn {
-      display: flex;
-    }
-
-    .delete-handle {
-      top: -10px;
-      left: -10px;
-      background: #ff3b30;
-      color: #fff;
-    }
-
-    .rotate-handle {
-      bottom: -10px;
-      right: -10px;
-      background: #fff;
-      color: #000;
-    }
-
-    /* Bottom Tray Drawer */
+    /* ══════════════════════════════════════════════
+       Bottom Tray Drawer & Tabs
+    ══════════════════════════════════════════════ */
     .studio-drawer {
-      height: 240px;
-      background: #18181c;
+      height: 210px;
+      background: #111114;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       flex-direction: column;
-      z-index: 20;
+      z-index: 40;
     }
 
     .drawer-tabs {
       display: flex;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      background: #141417;
+      background: #0d0d10;
     }
 
     .drawer-tab {
       flex: 1;
-      padding: 12px 0;
+      padding: 10px 0;
       text-align: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: #777;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      font-family: 'Heimat Mono', monospace;
+      color: #666;
       cursor: pointer;
       transition: color 0.2s;
     }
@@ -221,66 +343,78 @@
       overflow-x: auto;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       padding: 0 16px;
       scrollbar-width: none;
     }
     .drawer-items-scroll::-webkit-scrollbar { display: none; }
 
     .asset-card {
-      width: 90px;
-      height: 120px;
-      background: #222228;
+      width: 86px;
+      height: 110px;
+      background: #18181d;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 10px;
+      padding: 8px;
       cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
+      transition: transform 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .asset-card:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: #1f1f26;
     }
     .asset-card:active {
-      transform: scale(0.94);
-      border-color: #fff;
+      transform: scale(0.93);
+      border-color: #ff7a00;
     }
 
     .asset-card img {
-      max-width: 65px;
-      max-height: 70px;
+      max-width: 62px;
+      max-height: 64px;
       object-fit: contain;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
     }
 
     .asset-card-title {
-      font-size: 10px;
-      color: #aaa;
+      font-size: 9.5px;
+      color: #999;
       text-align: center;
       line-height: 1.2;
+      font-family: 'Heimat Mono', monospace;
+      letter-spacing: 0.03em;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
     }
 
-    /* Toast */
+    /* ══════════════════════════════════════════════
+       Toast
+    ══════════════════════════════════════════════ */
     #toast {
       position: fixed;
-      top: 70px;
+      top: 66px;
       left: 50%;
       transform: translateX(-50%) translateY(-20px);
       background: rgba(255, 255, 255, 0.95);
       color: #000;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Heimat Mono', monospace;
+      letter-spacing: 0.04em;
+      padding: 7px 18px;
+      border-radius: 9999px;
       z-index: 100;
       opacity: 0;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
       pointer-events: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
     #toast.show {
       transform: translateX(-50%) translateY(0);
@@ -290,25 +424,41 @@
 </head>
 <body>
   <div id="app">
-    <!-- Top Bar -->
+    <!-- Top Header Bar -->
     <div class="studio-header">
-      <button class="header-btn" id="exitBtn" title="Back to profile">&#8592;</button>
-      <span class="header-title">Design Studio</span>
+      <button class="header-btn" id="exitBtn" title="Back to profile">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <span class="header-title">DESIGN STUDIO</span>
       <button class="done-btn" id="publishBtn">PUBLISH</button>
     </div>
 
-    <!-- Canvas Stage -->
+    <!-- Canvas Stage Area with Dark Grid & Dashed Center Crosshairs -->
     <div class="studio-stage" id="stage">
+      <div class="grid-crosshair-v"></div>
+      <div class="grid-crosshair-h"></div>
+      
+      <!-- Subtle intersection dot markers -->
+      <div class="grid-dot" style="left: calc(50% - 96px); top: calc(50% - 144px);"></div>
+      <div class="grid-dot" style="left: calc(50% + 96px); top: calc(50% - 144px);"></div>
+      <div class="grid-dot" style="left: calc(50% - 96px); top: calc(50% + 144px);"></div>
+      <div class="grid-dot" style="left: calc(50% + 96px); top: calc(50% + 144px);"></div>
+      <div class="grid-dot" style="left: calc(50% - 144px); top: 50%;"></div>
+      <div class="grid-dot" style="left: calc(50% + 144px); top: 50%;"></div>
+
+      <!-- Dominant Translucent Phone Case Container -->
       <div class="phone-case-container" id="phoneContainer">
-        <img id="baseCover" class="phone-cover-img" src="Assets/Items/case_beige.png" alt="Phone Cover Base" />
+        <img id="baseCover" class="phone-cover-img" src="Assets/Phone Cover/case_translucent_magsafe.svg" alt="Phone Cover Base" />
       </div>
     </div>
 
     <!-- Asset Tray Drawer -->
     <div class="studio-drawer">
       <div class="drawer-tabs">
-        <div class="drawer-tab active" data-tab="covers">COVERS</div>
-        <div class="drawer-tab" data-tab="stickers">STICKERS</div>
+        <div class="drawer-tab active" data-tab="stickers">STICKERS</div>
+        <div class="drawer-tab" data-tab="covers">COVERS</div>
         <div class="drawer-tab" data-tab="charms">CHARMS</div>
       </div>
       <div class="drawer-items-scroll" id="assetTray">
@@ -320,20 +470,32 @@
   </div>
 
   <script>
-    // Asset Libraries
+    // Cohesive, Expressive Designer Asset Library
     const ASSETS = {
+      stickers: [
+        { name: 'Red Barn House', img: 'Assets/Stickers/house.svg', defaultW: 96, defaultH: 84 },
+        { name: 'Photo Card', img: 'Assets/Stickers/photo_card.png', defaultW: 95, defaultH: 104 },
+        { name: 'Ocean Waves', img: 'Assets/Stickers/waves.svg', defaultW: 88, defaultH: 76 },
+        { name: 'Folk Dove', img: 'Assets/Stickers/dove.svg', defaultW: 86, defaultH: 70 },
+        { name: 'Butterfly', img: 'Assets/Stickers/butterfly.svg', defaultW: 76, defaultH: 65 },
+        { name: 'Athletic JAMES', img: 'Assets/Stickers/james.svg', defaultW: 105, defaultH: 34 },
+        { name: 'Take it easy', img: 'Assets/Stickers/take_it_easy.svg', defaultW: 115, defaultH: 36 },
+        { name: 'Yellow Sparkle', img: 'Assets/Stickers/star_yellow.svg', defaultW: 42, defaultH: 42 },
+        { name: 'Pink Star', img: 'Assets/Stickers/star_pink.svg', defaultW: 32, defaultH: 32 },
+        { name: 'Ice Blue Star', img: 'Assets/Stickers/star_blue.svg', defaultW: 40, defaultH: 40 },
+        { name: 'Pine Trees', img: 'Assets/Stickers/pine_trees.svg', defaultW: 46, defaultH: 40 },
+        { name: 'Spider Punk', img: 'Assets/Items/sticker_spiderpunk.png', defaultW: 80, defaultH: 80 }
+      ],
       covers: [
+        { name: 'Translucent MagSafe', img: 'Assets/Phone Cover/case_translucent_magsafe.svg' },
         { name: 'Silicon Beige', img: 'Assets/Items/case_beige.png' },
         { name: 'Burgundy Wave', img: 'Assets/POSTS/post2.png' },
         { name: 'Marimekko Clear', img: 'Assets/POSTS/post3.png' }
       ],
-      stickers: [
-        { name: 'Hello Miles', img: 'Assets/Items/sticker_hello_miles.png' },
-        { name: 'Spider Punk', img: 'Assets/Items/sticker_spiderpunk.png' }
-      ],
       charms: [
         { name: 'Little Aid Charm', img: 'Assets/Items/charm_cat.jpg' },
-        { name: 'Pearl Beaded Strap', img: 'Assets/POSTS/post2.png' }
+        { name: 'Pearl Beaded Strap', img: 'Assets/POSTS/post2.png' },
+        { name: 'Phone Charm', img: 'Assets/Charms/phone_charm_1789298636210.jpg' }
       ]
     };
 
@@ -344,7 +506,7 @@
     const publishBtn = document.getElementById('publishBtn');
     const exitBtn = document.getElementById('exitBtn');
 
-    let activeTab = 'covers';
+    let activeTab = 'stickers';
     let selectedElement = null;
 
     // Switch Tabs
@@ -380,27 +542,82 @@
       });
     }
 
-    // Add Sticker/Charm to Stage
-    function addItemToStage(item) {
+    // SVG Icons for floating pill toolbar
+    const ICONS = {
+      delete: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`,
+      duplicate: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
+      scale: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`,
+      flip: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 3 4 7 8 11"/><polyline points="4 7 20 7 20 11"/><polyline points="16 21 20 17 16 13"/><polyline points="20 17 4 17 4 13"/></svg>`,
+      rotate: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>`
+    };
+
+    // Add Sticker / Item to Stage
+    function addItemToStage(item, options = {}) {
       const el = document.createElement('div');
       el.className = 'placed-item';
-      el.style.left = '75px';
-      el.style.top = '140px';
-      el.style.width = '90px';
-      el.style.height = '90px';
+      
+      const width = options.width || item.defaultW || 90;
+      const height = options.height || item.defaultH || 90;
+      const left = options.left !== undefined ? options.left : (phoneContainer.clientWidth / 2 - width / 2);
+      const top = options.top !== undefined ? options.top : (phoneContainer.clientHeight / 2 - height / 2);
+      const rotation = options.rotation || 0;
+      const flipped = options.flipped || false;
+
+      el.style.left = `${left}px`;
+      el.style.top = `${top}px`;
+      el.style.width = `${width}px`;
+      el.style.height = `${height}px`;
+
+      el.dataset.rotation = rotation;
+      el.dataset.flipped = flipped ? '1' : '0';
+      el.dataset.itemName = item.name;
+      el.dataset.itemImg = item.img;
+      el.dataset.scaleFactor = options.scaleFactor || 1;
+
+      updateTransform(el);
 
       el.innerHTML = `
         <img src="${item.img}" alt="${item.name}" />
-        <div class="handle-btn delete-handle">&times;</div>
+        
+        <!-- White corner handles -->
+        <div class="handle-dot handle-tl"></div>
+        <div class="handle-dot handle-tr"></div>
+        <div class="handle-dot handle-bl"></div>
+        <div class="handle-dot handle-br"></div>
+        <div class="handle-dot handle-tc"></div>
+        <div class="handle-dot handle-bc"></div>
+        <div class="handle-dot handle-ml"></div>
+        <div class="handle-dot handle-mr"></div>
+        
+        <!-- Bottom-Right Circular Rotation Handle -->
+        <div class="rotate-handle" title="Rotate item">${ICONS.rotate}</div>
+
+        <!-- Floating White Pill Toolbar -->
+        <div class="floating-pill-toolbar">
+          <button class="pill-btn delete-btn" title="Delete">${ICONS.delete}</button>
+          <button class="pill-btn dup-btn" title="Duplicate">${ICONS.duplicate}</button>
+          <button class="pill-btn scale-btn" title="Resize">${ICONS.scale}</button>
+          <button class="pill-btn flip-btn" title="Flip">${ICONS.flip}</button>
+        </div>
       `;
 
       phoneContainer.appendChild(el);
       makeInteractive(el);
       selectItem(el);
-      showToast(`Added ${item.name}`);
+      if (!options.silent) {
+        showToast(`Added ${item.name}`);
+      }
+      return el;
     }
 
-    // Interactive Drag / Select / Delete
+    function updateTransform(el) {
+      const rot = parseFloat(el.dataset.rotation || 0);
+      const flip = el.dataset.flipped === '1' ? -1 : 1;
+      const scale = parseFloat(el.dataset.scaleFactor || 1);
+      el.style.transform = `rotate(${rot}deg) scaleX(${flip * scale}) scaleY(${scale})`;
+    }
+
+    // Select / Deselect Item
     function selectItem(el) {
       document.querySelectorAll('.placed-item').forEach(i => i.classList.remove('selected'));
       if (el) {
@@ -411,26 +628,98 @@
       }
     }
 
-    stage.addEventListener('click', (e) => {
-      if (!e.target.closest('.placed-item')) {
+    stage.addEventListener('pointerdown', (e) => {
+      if (!e.target.closest('.placed-item') && !e.target.closest('.studio-drawer')) {
         selectItem(null);
       }
     });
 
+    // Make Placed Element Interactive (Drag, Rotate, Actions)
     function makeInteractive(el) {
       let isDragging = false;
       let startX = 0, startY = 0;
       let initialLeft = 0, initialTop = 0;
 
-      const deleteBtn = el.querySelector('.delete-handle');
+      // Pill Toolbar Buttons
+      const deleteBtn = el.querySelector('.delete-btn');
       deleteBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         el.remove();
         selectItem(null);
       });
 
+      const dupBtn = el.querySelector('.dup-btn');
+      dupBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const itemData = {
+          name: el.dataset.itemName,
+          img: el.dataset.itemImg
+        };
+        addItemToStage(itemData, {
+          width: el.clientWidth,
+          height: el.clientHeight,
+          left: el.offsetLeft + 16,
+          top: el.offsetTop + 16,
+          rotation: parseFloat(el.dataset.rotation || 0),
+          flipped: el.dataset.flipped === '1',
+          scaleFactor: parseFloat(el.dataset.scaleFactor || 1)
+        });
+      });
+
+      const scaleBtn = el.querySelector('.scale-btn');
+      scaleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        let cur = parseFloat(el.dataset.scaleFactor || 1);
+        if (cur >= 1.4) cur = 0.8;
+        else if (cur >= 1.0) cur = 1.3;
+        else cur = 1.0;
+        el.dataset.scaleFactor = cur;
+        updateTransform(el);
+      });
+
+      const flipBtn = el.querySelector('.flip-btn');
+      flipBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        el.dataset.flipped = el.dataset.flipped === '1' ? '0' : '1';
+        updateTransform(el);
+      });
+
+      // Rotation Handle Drag & Click
+      const rotateHandle = el.querySelector('.rotate-handle');
+      let isRotating = false;
+
+      rotateHandle.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        isRotating = true;
+        rotateHandle.setPointerCapture(e.pointerId);
+      });
+
+      rotateHandle.addEventListener('pointermove', (e) => {
+        if (!isRotating) return;
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const rad = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+        let deg = Math.round(rad * (180 / Math.PI) - 45); // offset for handle position
+        el.dataset.rotation = deg;
+        updateTransform(el);
+      });
+
+      rotateHandle.addEventListener('pointerup', () => {
+        isRotating = false;
+      });
+
+      // Click on rotate handle directly steps 15 degrees
+      rotateHandle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        let deg = (parseFloat(el.dataset.rotation || 0) + 15) % 360;
+        el.dataset.rotation = deg;
+        updateTransform(el);
+      });
+
+      // Dragging the item
       el.addEventListener('pointerdown', (e) => {
-        if (e.target.classList.contains('handle-btn')) return;
+        if (e.target.closest('.pill-btn') || e.target.closest('.rotate-handle')) return;
         selectItem(el);
         isDragging = true;
         startX = e.clientX;
@@ -453,22 +742,109 @@
       });
     }
 
-    // Publish Custom Design
+    // Pre-populate Stage with the Curated Composition from the Reference
+    function loadInitialComposition() {
+      // 1. "Take it easy" script placed across MagSafe
+      addItemToStage(
+        { name: 'Take it easy', img: 'Assets/Stickers/take_it_easy.svg' },
+        { width: 130, height: 40, left: 65, top: 215, rotation: -3, silent: true }
+      );
+
+      // 2. Photo card of the retriever
+      addItemToStage(
+        { name: 'Dog Photo Card', img: 'Assets/Stickers/photo_card.png' },
+        { width: 110, height: 122, left: 75, top: 285, rotation: 0, silent: true }
+      );
+
+      // 3. Two pine trees near the photo card bottom
+      addItemToStage(
+        { name: 'Pine Trees', img: 'Assets/Stickers/pine_trees.svg' },
+        { width: 38, height: 32, left: 82, top: 395, rotation: 0, silent: true }
+      );
+
+      // 4. Red Barn House to the left
+      addItemToStage(
+        { name: 'Red Barn House', img: 'Assets/Stickers/house.svg' },
+        { width: 96, height: 84, left: -50, top: 180, rotation: 0, silent: true }
+      );
+
+      // 5. Ocean Waves bottom-left
+      addItemToStage(
+        { name: 'Ocean Waves', img: 'Assets/Stickers/waves.svg' },
+        { width: 84, height: 72, left: -25, top: 350, rotation: 0, silent: true }
+      );
+
+      // 6. Folk Dove right of center
+      addItemToStage(
+        { name: 'Folk Dove', img: 'Assets/Stickers/dove.svg' },
+        { width: 88, height: 72, left: 200, top: 250, rotation: 0, silent: true }
+      );
+
+      // 7. Butterfly top-right
+      addItemToStage(
+        { name: 'Butterfly', img: 'Assets/Stickers/butterfly.svg' },
+        { width: 78, height: 68, left: 205, top: 95, rotation: 0, silent: true }
+      );
+
+      // 8. Collegiate JAMES bottom-right
+      addItemToStage(
+        { name: 'Athletic JAMES', img: 'Assets/Stickers/james.svg' },
+        { width: 104, height: 34, left: 195, top: 380, rotation: 0, silent: true }
+      );
+
+      // 9. Stars: Yellow sparkle top-left, pink star, ice blue star
+      addItemToStage(
+        { name: 'Yellow Sparkle', img: 'Assets/Stickers/star_yellow.svg' },
+        { width: 44, height: 44, left: -15, top: 65, rotation: 0, silent: true }
+      );
+
+      addItemToStage(
+        { name: 'Pink Star', img: 'Assets/Stickers/star_pink.svg' },
+        { width: 30, height: 30, left: -35, top: 52, rotation: 0, silent: true }
+      );
+
+      addItemToStage(
+        { name: 'Ice Blue Star', img: 'Assets/Stickers/star_blue.svg' },
+        { width: 44, height: 44, left: 228, top: 185, rotation: 0, silent: true }
+      );
+
+      // Default select the photo card
+      const photoEl = document.querySelector('.placed-item:nth-child(3)');
+      if (photoEl) selectItem(photoEl);
+    }
+
+    // Publish Custom Design & Save to LocalStorage
     publishBtn.addEventListener('click', async () => {
       publishBtn.disabled = true;
       publishBtn.textContent = 'SAVING...';
       showToast('Rendering design...');
 
       const canvas = document.createElement('canvas');
-      canvas.width = 480;
-      canvas.height = 880;
+      canvas.width = 600;
+      canvas.height = 1100;
       const ctx = canvas.getContext('2d');
 
-      // 1. Solid background
-      ctx.fillStyle = '#ffffff';
+      // 1. Dark aesthetic blueprint background
+      ctx.fillStyle = '#09090b';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // 2. Draw base cover image
+      // Grid lines on export
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 48) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 48) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // 2. Draw Base Cover
       try {
         const coverImg = new Image();
         coverImg.crossOrigin = 'anonymous';
@@ -477,12 +853,21 @@
           coverImg.onerror = resolve;
           coverImg.src = baseCover.src;
         });
-        ctx.drawImage(coverImg, 20, 20, 440, 840);
-      } catch(e){}
+        const cW = 440;
+        const cH = 880;
+        const cX = (canvas.width - cW) / 2;
+        const cY = (canvas.height - cH) / 2;
+        ctx.drawImage(coverImg, cX, cY, cW, cH);
+      } catch(e) {}
 
-      // 3. Draw overlay placed sticker items
+      // 3. Draw Overlay Placed Items
       const itemsUsed = [];
       const placedEls = phoneContainer.querySelectorAll('.placed-item');
+      const scaleX = 440 / phoneContainer.clientWidth;
+      const scaleY = 880 / phoneContainer.clientHeight;
+      const offsetX = (canvas.width - 440) / 2;
+      const offsetY = (canvas.height - 880) / 2;
+
       for (const el of placedEls) {
         const itemImgEl = el.querySelector('img');
         if (itemImgEl && itemImgEl.src) {
@@ -494,26 +879,34 @@
               stImg.onerror = resolve;
               stImg.src = itemImgEl.src;
             });
-            const scaleX = canvas.width / phoneContainer.clientWidth;
-            const scaleY = canvas.height / phoneContainer.clientHeight;
-            const x = el.offsetLeft * scaleX;
-            const y = el.offsetTop * scaleY;
+
+            const x = offsetX + el.offsetLeft * scaleX;
+            const y = offsetY + el.offsetTop * scaleY;
             const w = el.clientWidth * scaleX;
             const h = el.clientHeight * scaleY;
-            ctx.drawImage(stImg, x, y, w, h);
+            const rot = parseFloat(el.dataset.rotation || 0) * (Math.PI / 180);
+            const flip = el.dataset.flipped === '1' ? -1 : 1;
+            const userScale = parseFloat(el.dataset.scaleFactor || 1);
+
+            ctx.save();
+            ctx.translate(x + w / 2, y + h / 2);
+            ctx.rotate(rot);
+            ctx.scale(flip * userScale, userScale);
+            ctx.drawImage(stImg, -w / 2, -h / 2, w, h);
+            ctx.restore();
 
             itemsUsed.push({
-              name: itemImgEl.alt || 'Custom Sticker',
+              name: el.dataset.itemName || itemImgEl.alt || 'Custom Sticker',
               price: 150,
               img: itemImgEl.src
             });
-          } catch(e){}
+          } catch(e) {}
         }
       }
 
       itemsUsed.unshift({
-        name: 'Custom Base Cover',
-        price: 450,
+        name: 'Translucent MagSafe Case',
+        price: 650,
         img: baseCover.src
       });
 
@@ -523,7 +916,7 @@
         id: 'post_' + Date.now(),
         src: dataURL,
         user: '@satyeks',
-        tags: '#custom #designstudio',
+        tags: '#custom #designstudio #hotcatpics',
         items: itemsUsed,
         createdAt: Date.now()
       };
@@ -532,7 +925,7 @@
         const customPosts = JSON.parse(localStorage.getItem('hcp_custom_posts') || '[]');
         customPosts.unshift(customPost);
         localStorage.setItem('hcp_custom_posts', JSON.stringify(customPosts));
-      } catch(e){}
+      } catch(e) {}
 
       showToast('Published to Feed & Profile!');
       setTimeout(() => {
@@ -548,11 +941,12 @@
       const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      setTimeout(() => toast.classList.remove('show'), 2200);
     }
 
-    // Initial render
+    // Initialize tray and stage composition
     renderTray();
+    loadInitialComposition();
   </script>
 </body>
 </html>
