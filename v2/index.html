@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOTCATPICS v2 — Desktop Studio & Experimentation Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="desktop-workstation">
+  <!-- Top Navigation Header -->
+  <header class="studio-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-link" title="Return to Main Store">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <div class="brand-group">
+        <span class="brand-title">HOTCATPICS</span>
+        <span class="v2-badge">v2 DESKTOP LAB</span>
+      </div>
+      <div class="doc-title-wrapper">
+        <span class="doc-title" contenteditable="true" spellcheck="false" id="projectTitle">Untitled Case 01</span>
+        <span class="save-status" id="saveStatus">Saved</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="history-controls">
+        <button class="tool-btn" id="undoBtn" title="Undo (Cmd+Z)" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+        </button>
+        <button class="tool-btn" id="redoBtn" title="Redo (Cmd+Shift+Z)" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3L21 13"/></svg>
+        </button>
+      </div>
+
+      <div class="zoom-controls">
+        <button class="tool-btn" id="zoomOutBtn" title="Zoom Out (-)">−</button>
+        <span class="zoom-display" id="zoomLevel">100%</span>
+        <button class="tool-btn" id="zoomInBtn" title="Zoom In (+)">+</button>
+        <button class="tool-btn text-btn" id="zoomFitBtn" title="Reset Zoom">Fit</button>
+      </div>
+
+      <div class="view-toggles">
+        <button class="view-btn active" id="viewToggleGrid" title="Toggle Blueprint Grid">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+          <span>Grid</span>
+        </button>
+        <button class="view-btn" id="viewToggleMockup" title="Toggle 3D Angle Preview">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          <span>3D Angle</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="secondary-btn" id="clearCanvasBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        <span>Clear</span>
+      </button>
+      <button class="secondary-btn" id="exportBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span>Export PNG</span>
+      </button>
+      <button class="primary-btn" id="addToCartBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        <span>Add to Cart • ₹1,299</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workstation Layout -->
+  <main class="studio-workspace">
+    <!-- Left Asset & Tool Palette -->
+    <aside class="studio-sidebar left-sidebar">
+      <nav class="sidebar-tabs">
+        <button class="tab-item active" data-tab="stickers" title="Vector Stickers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+          <span>Stickers</span>
+        </button>
+        <button class="tab-item" data-tab="photos" title="Polaroids & Photos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Photos</span>
+        </button>
+        <button class="tab-item" data-tab="charms" title="Phone Charms">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 6-10 12L2 9l4-6z"/></svg>
+          <span>Charms</span>
+        </button>
+        <button class="tab-item" data-tab="text" title="Typography & Tags">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          <span>Text</span>
+        </button>
+        <button class="tab-item" data-tab="upload" title="Custom Upload">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          <span>Upload</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-panel-container">
+        <!-- Stickers Tab Panel -->
+        <div class="tab-panel active" id="panel-stickers">
+          <div class="panel-header">
+            <h3>Vector Stickers</h3>
+            <span class="badge" id="stickerCount">12 items</span>
+          </div>
+          <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="stickerSearch" placeholder="Search stickers...">
+          </div>
+          <div class="asset-grid" id="stickersGrid">
+            <!-- Stickers populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Photos Tab Panel -->
+        <div class="tab-panel" id="panel-photos">
+          <div class="panel-header">
+            <h3>Photos & Mini Cards</h3>
+          </div>
+          <div class="asset-grid" id="photosGrid">
+            <!-- Photos populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Charms Tab Panel -->
+        <div class="tab-panel" id="panel-charms">
+          <div class="panel-header">
+            <h3>Beaded Charms</h3>
+          </div>
+          <div class="asset-grid" id="charmsGrid">
+            <!-- Charms populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Text Tab Panel -->
+        <div class="tab-panel" id="panel-text">
+          <div class="panel-header">
+            <h3>Custom Text</h3>
+          </div>
+          <div class="text-tool-form">
+            <input type="text" id="customTextInput" placeholder="Enter text..." value="HOTCAT">
+            <div class="font-selector">
+              <label>Font Style</label>
+              <select id="fontFamilySelect">
+                <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans</option>
+                <option value="Impact, sans-serif">Bold Impact</option>
+                <option value="cursive">Cursive Handwritten</option>
+              </select>
+            </div>
+            <div class="color-picker-row">
+              <label>Color</label>
+              <div class="color-swatches" id="textColorSwatches">
+                <button class="color-swatch active" style="background: #ffffff;" data-color="#ffffff"></button>
+                <button class="color-swatch" style="background: #000000;" data-color="#000000"></button>
+                <button class="color-swatch" style="background: #ff7a00;" data-color="#ff7a00"></button>
+                <button class="color-swatch" style="background: #ff3366;" data-color="#ff3366"></button>
+                <button class="color-swatch" style="background: #00f0ff;" data-color="#00f0ff"></button>
+                <button class="color-swatch" style="background: #ffdf00;" data-color="#ffdf00"></button>
+              </div>
+            </div>
+            <button class="add-text-btn" id="addTextBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Add Text to Case</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Tab Panel -->
+        <div class="tab-panel" id="panel-upload">
+          <div class="panel-header">
+            <h3>Upload Media</h3>
+          </div>
+          <div class="upload-dropzone" id="uploadDropzone">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            <p><strong>Click to upload</strong> or drag & drop</p>
+            <span>PNG, JPG, SVG, WebP up to 10MB</span>
+            <input type="file" id="fileInput" accept="image/*" style="display:none">
+          </div>
+          <div class="uploaded-items-list" id="uploadedList"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Canvas Stage -->
+    <section class="studio-stage-container" id="stageContainer">
+      <!-- Blueprint Coordinate Markers -->
+      <div class="canvas-ruler horizontal-ruler" id="rulerX"></div>
+      <div class="canvas-ruler vertical-ruler" id="rulerY"></div>
+
+      <!-- Zoom/Pan Canvas Wrapper -->
+      <div class="canvas-viewport" id="canvasViewport">
+        <div class="canvas-grid-surface" id="gridSurface"></div>
+
+        <!-- Case Stage -->
+        <div class="phone-case-stage" id="phoneCaseStage">
+          <!-- Hardware Case SVG Background -->
+          <div class="case-hardware-container" id="caseHardware">
+            <img src="../Assets/Phone Cover/case_translucent_magsafe.svg" alt="Translucent MagSafe Case" class="case-base-img" id="caseBaseImg">
+            <div class="case-finish-overlay" id="caseFinishOverlay"></div>
+            <div class="case-specular-highlight"></div>
+          </div>
+
+          <!-- Active Interactive Canvas Layers -->
+          <div class="sticker-interactive-layer" id="stickerLayer">
+            <!-- Elements dynamically attached here -->
+          </div>
+
+          <!-- Alignment Guides -->
+          <div class="align-guide guide-x" id="guideX"></div>
+          <div class="align-guide guide-y" id="guideY"></div>
+        </div>
+
+        <!-- Floating Context Toolbar (for selected item) -->
+        <div class="floating-selection-toolbar" id="selectionToolbar">
+          <button class="f-tool-btn" id="fDuplicateBtn" title="Duplicate (Cmd+D)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+          <button class="f-tool-btn" id="fLayerUpBtn" title="Bring Forward">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+          <button class="f-tool-btn" id="fLayerDownBtn" title="Send Backward">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button class="f-tool-btn" id="fFlipHBtn" title="Flip Horizontal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v14c0 1.1.9 2 2 2h3M16 3h3a2 2 0 012 2v14a2 2 0 01-2 2h-3M12 2v20"/></svg>
+          </button>
+          <div class="f-tool-divider"></div>
+          <button class="f-tool-btn danger" id="fDeleteBtn" title="Delete (Del)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Canvas HUD Footer -->
+      <footer class="stage-hud-bar">
+        <div class="hud-item">
+          <span class="hud-label">Device:</span>
+          <span class="hud-val" id="hudDevice">iPhone 16 Pro Max</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Finish:</span>
+          <span class="hud-val" id="hudFinish">Translucent Frost</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Layers:</span>
+          <span class="hud-val" id="hudLayers">0</span>
+        </div>
+        <div class="hud-shortcuts">
+          <span><kbd>Space</kbd> + Drag to Pan</span>
+          <span><kbd>Del</kbd> to Remove</span>
+          <span><kbd>⌘Z</kbd> Undo</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Right Inspector & Customization Panel -->
+    <aside class="studio-sidebar right-sidebar">
+      <!-- Section: Device & Case Hardware -->
+      <div class="inspector-section">
+        <div class="section-title">Case Hardware</div>
+        <div class="control-field">
+          <label>Device Model</label>
+          <select id="caseModelSelect" class="styled-select">
+            <option value="iphone16promax">iPhone 16 Pro Max</option>
+            <option value="iphone15pro">iPhone 15 Pro</option>
+            <option value="iphone15">iPhone 15</option>
+            <option value="samsung_s24">Samsung Galaxy S24 Ultra</option>
+            <option value="pixel9pro">Google Pixel 9 Pro</option>
+          </select>
+        </div>
+        <div class="control-field">
+          <label>Case Style & Finish</label>
+          <div class="case-finish-swatches" id="caseFinishSwatches">
+            <button class="finish-swatch active" data-finish="translucent" title="Translucent Clear">
+              <span class="swatch-preview finish-translucent"></span>
+              <span class="swatch-label">Clear</span>
+            </button>
+            <button class="finish-swatch" data-finish="matte-black" title="Matte Obsidian Black">
+              <span class="swatch-preview finish-black"></span>
+              <span class="swatch-label">Black</span>
+            </button>
+            <button class="finish-swatch" data-finish="titanium" title="Natural Titanium">
+              <span class="swatch-preview finish-titanium"></span>
+              <span class="swatch-label">Titanium</span>
+            </button>
+            <button class="finish-swatch" data-finish="blush-pink" title="Blush Rose">
+              <span class="swatch-preview finish-pink"></span>
+              <span class="swatch-label">Blush</span>
+            </button>
+            <button class="finish-swatch" data-finish="sage-green" title="Sage Green">
+              <span class="swatch-preview finish-green"></span>
+              <span class="swatch-label">Sage</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Selected Element Transform Inspector -->
+      <div class="inspector-section" id="inspectorTransform">
+        <div class="section-title">
+          <span>Transform</span>
+          <span class="active-item-name" id="selectedItemName">No Selection</span>
+        </div>
+        
+        <div class="property-grid">
+          <div class="prop-input-group">
+            <span class="prop-badge">X</span>
+            <input type="number" id="propX" value="0" disabled>
+          </div>
+          <div class="prop-input-group">
+            <span class="prop-badge">Y</span>
+            <input type="number" id="propY" value="0" disabled>
+          </div>
+          <div class="prop-input-group">
+            <span class="prop-badge">W</span>
+            <input type="number" id="propW" value="0" disabled>
+          </div>
+          <div class="prop-input-group">
+            <span class="prop-badge">H</span>
+            <input type="number" id="propH" value="0" disabled>
+          </div>
+          <div class="prop-input-group full-width">
+            <span class="prop-badge">∠</span>
+            <input type="range" id="propRotateSlider" min="-180" max="180" value="0" disabled>
+            <input type="number" id="propRotateNum" value="0" disabled class="num-compact">
+            <span class="unit">°</span>
+          </div>
+          <div class="prop-input-group full-width">
+            <span class="prop-badge">Opacity</span>
+            <input type="range" id="propOpacitySlider" min="10" max="100" value="100" disabled>
+            <input type="number" id="propOpacityNum" value="100" disabled class="num-compact">
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Layer Stack -->
+      <div class="inspector-section layers-section">
+        <div class="section-title">
+          <span>Layers</span>
+          <button class="mini-btn" id="clearAllLayersBtn" title="Clear all stickers">Clear</button>
+        </div>
+        <div class="layer-list" id="layerList">
+          <div class="empty-layers">No items placed yet. Click stickers on the left to add!</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast-hub" id="toastHub"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
